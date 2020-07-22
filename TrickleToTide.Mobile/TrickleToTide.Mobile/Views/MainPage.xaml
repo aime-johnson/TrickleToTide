@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="TrickleToTide.Mobile.Views.MainPage">
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical">
+            <Button Text="Boosh" Command="{Binding BooshCommand}" Margin="10"/>
+            <Label Margin="10">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="IsTracking: "/>
+                        <Span Text="{Binding IsTracking}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Label Margin="10">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="LastUpdate: "/>
+                        <Span Text="{Binding LastUpdateOn}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

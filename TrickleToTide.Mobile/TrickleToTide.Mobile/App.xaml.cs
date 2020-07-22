@@ -1,8 +1,6 @@
 ﻿using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using TrickleToTide.Mobile.Services;
-using TrickleToTide.Mobile.Views;
 
 namespace TrickleToTide.Mobile
 {
@@ -13,7 +11,8 @@ namespace TrickleToTide.Mobile
         {
             InitializeComponent();
 
-            DependencyService.Register<MockDataStore>();
+            //DependencyService.Register<MockDataStore>();
+            
             MainPage = new AppShell();
         }
 

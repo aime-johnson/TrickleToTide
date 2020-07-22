@@ -14,6 +14,7 @@ namespace TrickleToTide.Mobile
             services.UseGeofencing<GeofenceDelegate>();
             services.UseGps<GpsDelegate>();
             services.UseMotionActivity();
+            services.UseNotifications<NotifictionDelegate>(true);
         }
     }
 }
