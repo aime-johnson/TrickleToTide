@@ -112,7 +112,7 @@
       <Name>TrickleToTide.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\TrickleToTide.Mobile\TrickleToTide.Mobile.csproj">
-      <Project>{E934CBDF-F8F8-4237-A86A-32790CA386DB}</Project>
+      <Project>{af5d05a8-6ce0-4bc1-ab4a-74a34e1680f7}</Project>
       <Name>TrickleToTide.Mobile</Name>
     </ProjectReference>
   </ItemGroup>

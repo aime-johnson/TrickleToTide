@@ -14,11 +14,13 @@ namespace TrickleToTide.Mobile.ViewModels
     {
         private readonly IGpsManager _gpsManager;
         private readonly INotificationManager _notificationManager;
+        private readonly IMotionActivityManager _motionActivityManager;
 
         public MainViewModel()
         {
             _gpsManager = ShinyHost.Resolve<IGpsManager>();
             _notificationManager = ShinyHost.Resolve<INotificationManager>();
+            _motionActivityManager = ShinyHost.Resolve<IMotionActivityManager>();
 
             MessagingCenter.Subscribe<GpsDelegate, IGpsReading>(this, "OnReading", (sender, reading) =>
             {
@@ -37,12 +39,14 @@ namespace TrickleToTide.Mobile.ViewModels
             await ToggleTrackingAsync();
         }
 
+
         private DateTime? _lastUpdateOn;
         public DateTime? LastUpdateOn
         {
             get { return _lastUpdateOn; }
             set { SetProperty(ref _lastUpdateOn, value); }
         }
+
 
         private async Task ToggleTrackingAsync()
         {
