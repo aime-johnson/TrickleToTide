@@ -10,11 +10,11 @@ using Newtonsoft.Json;
 
 namespace TrickleToTide.Api
 {
-    public static class Function1
+    public static class Updates
     {
-        [FunctionName("Function1")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+        [FunctionName("update")]
+        public static async Task<IActionResult> Post(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
