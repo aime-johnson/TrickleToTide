@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30225.117
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrickleToTide.Mobile.Android", "TrickleToTide.Mobile\TrickleToTide.Mobile.Android\TrickleToTide.Mobile.Android.csproj", "{A75E287B-8F73-434A-8587-B32E98E8AD66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrickleToTide.Mobile", "TrickleToTide.Mobile\TrickleToTide.Mobile\TrickleToTide.Mobile.csproj", "{14486485-A786-4B08-A5CB-8EF12E72EFE2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrickleToTide.Common", "TrickleToTide.Common\TrickleToTide.Common.csproj", "{2CA743CF-A868-49C1-B8CD-DAADD341CF3C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mobile", "Mobile", "{BF8115A7-A848-45DA-BAD3-BA0E326EA537}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8678CD1E-7549-4B3B-83AB-8BA7239D7621}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A75E287B-8F73-434A-8587-B32E98E8AD66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A75E287B-8F73-434A-8587-B32E98E8AD66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A75E287B-8F73-434A-8587-B32E98E8AD66}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{A75E287B-8F73-434A-8587-B32E98E8AD66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A75E287B-8F73-434A-8587-B32E98E8AD66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A75E287B-8F73-434A-8587-B32E98E8AD66}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{14486485-A786-4B08-A5CB-8EF12E72EFE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14486485-A786-4B08-A5CB-8EF12E72EFE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14486485-A786-4B08-A5CB-8EF12E72EFE2}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{14486485-A786-4B08-A5CB-8EF12E72EFE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14486485-A786-4B08-A5CB-8EF12E72EFE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14486485-A786-4B08-A5CB-8EF12E72EFE2}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{2CA743CF-A868-49C1-B8CD-DAADD341CF3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CA743CF-A868-49C1-B8CD-DAADD341CF3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CA743CF-A868-49C1-B8CD-DAADD341CF3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CA743CF-A868-49C1-B8CD-DAADD341CF3C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A75E287B-8F73-434A-8587-B32E98E8AD66} = {BF8115A7-A848-45DA-BAD3-BA0E326EA537}
+		{14486485-A786-4B08-A5CB-8EF12E72EFE2} = {BF8115A7-A848-45DA-BAD3-BA0E326EA537}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {67FED838-7F0E-4DD1-A028-444D5F30DBC2}
+	EndGlobalSection
+EndGlobal
