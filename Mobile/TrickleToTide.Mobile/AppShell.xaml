@@ -34,10 +34,17 @@
         <Tab Title="Main" Icon="tab_feed.png">
             <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
         </Tab>
-        <Tab Title="About" Icon="tab_about.png">
-            <ShellContent ContentTemplate="{DataTemplate local:AboutPage}" />
+        <Tab Title="Settings" Icon="tab_feed.png">
+            <ShellContent ContentTemplate="{DataTemplate local:SettingsPage}" />
         </Tab>
     </TabBar>
+
+    <!--<FlyoutItem Title="Main" Icon="tab_feed.png">
+        <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="About" Icon="tab_about.png">
+        <ShellContent ContentTemplate="{DataTemplate local:AboutPage}" />
+    </FlyoutItem>-->
 
     <!-- Optional Templates 
     // These may be provided inline as below or as separate classes.
