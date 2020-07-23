@@ -11,8 +11,8 @@ on:
 #
 # 2. Change these variables for your configuration:
 env:
-  AZURE_FUNCTIONAPP_NAME: yourswampnet-ttt  # set this to your application's name
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: '\Api\TrickleToTide.Api'    # set this to the path to your web app project, defaults to the repository root
+  AZURE_FUNCTIONAPP_NAME: swampnet-ttt  # set this to your application's name
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'Api\TrickleToTide.Api'    # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '3.1'              # set this to the dotnet version to use
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
     runs-on: windows-latest
     steps:
     - name: 'Checkout GitHub Action'
-      uses: actions/checkout@master
+      uses: actions/checkout@main
 
     - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
       uses: actions/setup-dotnet@v1
