@@ -5,9 +5,7 @@ https://www.justgiving.com/fundraising/Trickle-to-Tide
 http://adventurelog.co.uk/ttt/
 
 
-## Shoutouts
-
-(@todo: Links)
+(@todo: Links for below)
 
 - Xamarin Forms
 - Xamarin Essentials 
