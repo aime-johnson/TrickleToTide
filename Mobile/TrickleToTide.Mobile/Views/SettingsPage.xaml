@@ -6,10 +6,24 @@
              mc:Ignorable="d"
              x:Class="TrickleToTide.Mobile.Views.SettingsPage">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="@todo: Settings"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+        <StackLayout Orientation="Vertical">
+            <Button Text="Boosh" Command="{Binding BooshCommand}" Margin="10"/>
+            <Label Margin="10">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="IsTracking: "/>
+                        <Span Text="{Binding IsTracking}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <Label Margin="10">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="LastUpdate: "/>
+                        <Span Text="{Binding LastUpdateOn}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
