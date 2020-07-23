@@ -4,7 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using TrickleToTide.Common;
 using TrickleToTide.Mobile.Delegates;
+using TrickleToTide.Mobile.Interfaces;
+using TrickleToTide.Mobile.Services;
 using Xamarin.Forms;
 
 namespace TrickleToTide.Mobile.ViewModels
@@ -17,9 +20,22 @@ namespace TrickleToTide.Mobile.ViewModels
         {
             _gpsManager = ShinyHost.Resolve<IGpsManager>();
 
-            MessagingCenter.Subscribe<GpsDelegate, IGpsReading>(this, "OnReading", (sender, reading) =>
+            MessagingCenter.Subscribe<GpsDelegate, IGpsReading>(this, "OnReading", async (sender, reading) =>
             {
-                LastUpdateOn = DateTime.Now;
+                try
+                {
+                    await Api.UpdatePositionAsync(new PositionUpdate() { 
+                        Lat = reading.Position.Latitude,
+                        Lon = reading.Position.Longitude,
+                        Alt = reading.Altitude,
+                        Timestamp = DateTime.Now
+                    });
+                    LastUpdateOn = DateTime.Now;
+                }
+                catch
+                {
+                    // noop
+                }
             });
         }
 

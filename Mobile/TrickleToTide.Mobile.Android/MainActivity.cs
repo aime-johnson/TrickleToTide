@@ -8,6 +8,9 @@ using Android.Widget;
 using Android.OS;
 using Shiny;
 using Android.Content;
+using Xamarin.Forms;
+using TrickleToTide.Mobile.Interfaces;
+using TrickleToTide.Mobile.Droid.Services;
 
 namespace TrickleToTide.Mobile.Droid
 {
@@ -18,6 +21,8 @@ namespace TrickleToTide.Mobile.Droid
         {
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
+
+            DependencyService.Register<IPlatform, PlatformService>();
 
             base.OnCreate(savedInstanceState);
 

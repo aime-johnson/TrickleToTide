@@ -2,7 +2,7 @@
 
 namespace TrickleToTide.Common
 {
-    public class Position
+    public class PositionUpdate
     {
         /// <summary>
         /// Local time

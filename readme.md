@@ -11,3 +11,16 @@ http://adventurelog.co.uk/ttt/
 - Xamarin Essentials 
 - Shiny
 - Azure
+
+
+### Android Setup
+
+You'll need to add a secrets.xml file to Resources\values with the following content:
+
+''''
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+  <string name="api_key_google_maps">MAPS API KEY</string>
+  <string name="api_key_ttt">TTT SERVICE API KEY</string>
+</resources>
+''''
