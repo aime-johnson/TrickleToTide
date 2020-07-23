@@ -11,6 +11,7 @@ http://adventurelog.co.uk/ttt/
 - Xamarin Essentials 
 - Shiny
 - Azure
+- GitHub Actions
 
 
 ### Android Setup
