@@ -12,8 +12,16 @@ namespace TrickleToTide.Mobile
             InitializeComponent();
 
             //DependencyService.Register<MockDataStore>();
-            
+
+            Xamarin.Essentials.Connectivity.ConnectivityChanged += ConnectivityChanged;
+
             MainPage = new AppShell();
+        }
+
+
+        private void ConnectivityChanged(object sender, Xamarin.Essentials.ConnectivityChangedEventArgs e)
+        {
+            MessagingCenter.Send(this, "ConnectionChanged", e);
         }
 
         protected override void OnStart()

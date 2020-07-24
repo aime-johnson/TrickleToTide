@@ -2,6 +2,7 @@
 using Shiny.Locations;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TrickleToTide.Common;
@@ -37,6 +38,17 @@ namespace TrickleToTide.Mobile.ViewModels
                     // noop
                 }
             });
+
+            MessagingCenter.Subscribe<App, Xamarin.Essentials.ConnectivityChangedEventArgs>(this, "ConnectionChanged", (sender, args) => {
+                try
+                {
+                    OnPropertyChanged("ConnectionStatus");
+                }
+                catch
+                {
+                    // noop
+                }
+            });
         }
 
         public bool IsTracking => _gpsManager.IsListening;
@@ -48,6 +60,7 @@ namespace TrickleToTide.Mobile.ViewModels
             await ToggleTrackingAsync();
         }
 
+        public string ConnectionStatus => Xamarin.Essentials.Connectivity.NetworkAccess.ToString() + " / " + string.Join(", ",Xamarin.Essentials.Connectivity.ConnectionProfiles.Select(x=>x.ToString()));
 
         private DateTime? _lastUpdateOn;
         public DateTime? LastUpdateOn

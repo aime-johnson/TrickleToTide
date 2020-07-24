@@ -7,29 +7,40 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using TrickleToTide.Common;
 
 namespace TrickleToTide.Api
 {
     public static class Updates
     {
         [FunctionName("update")]
-        public static async Task<IActionResult> Post(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+        public static async Task<IActionResult> Update(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            log.LogInformation("update");
 
-            string name = req.Query["name"];
+            
+            var content = await new StreamReader(req.Body).ReadToEndAsync();
+            
+            log.LogInformation(content);
+            
+            var entry = JsonConvert.DeserializeObject<PositionUpdate>(content);
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            await Task.CompletedTask;
+            return new OkResult();
+        }
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
 
-            return new OkObjectResult(responseMessage);
+        [FunctionName("ping")]
+        public static async Task<IActionResult> Ping(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
+            ILogger log)
+        {
+            log.LogInformation("ping");
+
+            await Task.CompletedTask;
+            return new OkObjectResult($"Pong: {DateTime.UtcNow}");
         }
     }
 }

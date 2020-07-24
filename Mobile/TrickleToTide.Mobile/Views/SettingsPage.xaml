@@ -24,6 +24,14 @@
                     </FormattedString>
                 </Label.FormattedText>
             </Label>
+            <Label Margin="10">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="ConnectionStatus: "/>
+                        <Span Text="{Binding ConnectionStatus}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
