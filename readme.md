@@ -18,12 +18,12 @@ http://adventurelog.co.uk/ttt/
 
 You'll need to add a secrets.xml file to Resources\values with the following content:
 
-''''
+```
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
   <string name="api_key_google_maps">MAPS API KEY</string>
   <string name="api_key_ttt">TTT SERVICE API KEY</string>
 </resources>
-''''
+```
 
 ![Deploy DotNet project to Azure Function App](https://github.com/RandomBlueThing/TrickleToTide/workflows/Deploy%20DotNet%20project%20to%20Azure%20Function%20App/badge.svg)
