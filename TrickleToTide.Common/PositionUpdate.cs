@@ -4,6 +4,8 @@ namespace TrickleToTide.Common
 {
     public class PositionUpdate
     {
+        public Guid Id { get; set; }
+
         /// <summary>
         /// Local time
         /// </summary>
@@ -17,5 +19,8 @@ namespace TrickleToTide.Common
         /// Nickname
         /// </summary>
         public string Nick { get; set; }
+        public double Accuracy { get; set; }
+        public double Heading { get; set; }
+        public double Speed { get; set; }
     }
 }

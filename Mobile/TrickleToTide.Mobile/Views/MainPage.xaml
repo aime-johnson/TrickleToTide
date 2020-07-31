@@ -13,6 +13,11 @@
                       HasScrollEnabled="False"
                       IsShowingUser="True"
                       />
+            <StackLayout Orientation="Horizontal" VerticalOptions="Start">
+                <Label Padding="10" Text="{Binding LastUpdateOn}"/>
+            </StackLayout>
+            <Button x:Name="startButton" HorizontalOptions="Center" VerticalOptions="Center" Text="Start" Command="{Binding StartCommand}"/>
+            <Button x:Name="stopButton" HorizontalOptions="End" VerticalOptions="End" Margin="10" Text="Stop" Command="{Binding StopCommand}"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

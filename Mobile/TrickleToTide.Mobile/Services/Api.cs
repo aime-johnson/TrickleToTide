@@ -35,14 +35,14 @@ namespace TrickleToTide.Mobile.Services
             if(_lastUpdate.Elapsed.TotalSeconds > _throttleSeconds)
             {
                 await Task.CompletedTask;
-                //var rs = await _client.PostAsync(
-                //    _endpoint + "/api/update",
-                //    new StringContent(
-                //        JsonConvert.SerializeObject(position),
-                //        Encoding.UTF8,
-                //        "application/json"));
-                
-                //rs.EnsureSuccessStatusCode();
+                var rs = await _client.PostAsync(
+                    _endpoint + "/api/update",
+                    new StringContent(
+                        JsonConvert.SerializeObject(position),
+                        Encoding.UTF8,
+                        "application/json"));
+
+                rs.EnsureSuccessStatusCode();
 
                 _lastUpdate.Restart();
             }

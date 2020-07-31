@@ -21,22 +21,8 @@ namespace TrickleToTide.Mobile.ViewModels
         {
             _gpsManager = ShinyHost.Resolve<IGpsManager>();
 
-            MessagingCenter.Subscribe<GpsDelegate, IGpsReading>(this, "OnReading", async (sender, reading) =>
+            MessagingCenter.Subscribe<GpsDelegate, IGpsReading>(this, "OnReading", (sender, reading) =>
             {
-                try
-                {
-                    await Api.UpdatePositionAsync(new PositionUpdate() { 
-                        Lat = reading.Position.Latitude,
-                        Lon = reading.Position.Longitude,
-                        Alt = reading.Altitude,
-                        Timestamp = DateTime.Now
-                    });
-                    LastUpdateOn = DateTime.Now;
-                }
-                catch
-                {
-                    // noop
-                }
             });
 
             MessagingCenter.Subscribe<App, Xamarin.Essentials.ConnectivityChangedEventArgs>(this, "ConnectionChanged", (sender, args) => {
@@ -51,26 +37,10 @@ namespace TrickleToTide.Mobile.ViewModels
             });
         }
 
-        public bool IsTracking => _gpsManager.IsListening;
-        private Command _booshCommand;
-        public Command BooshCommand => _booshCommand ?? (_booshCommand = new Command(Boosh));
-        private async void Boosh()
-        {
-            //await _notificationManager.Send("Test", "Message");
-            await ToggleTrackingAsync();
-        }
-
-        public string ConnectionStatus => Xamarin.Essentials.Connectivity.NetworkAccess.ToString() + " / " + string.Join(", ",Xamarin.Essentials.Connectivity.ConnectionProfiles.Select(x=>x.ToString()));
-
-        private DateTime? _lastUpdateOn;
-        public DateTime? LastUpdateOn
-        {
-            get { return _lastUpdateOn; }
-            set { SetProperty(ref _lastUpdateOn, value); }
-        }
-
-
-        private async Task ToggleTrackingAsync()
+        public bool GpsConnected => _gpsManager.IsListening;
+        private Command _connectCommand;
+        public Command ConnectCommand => _connectCommand ?? (_connectCommand = new Command(Connect));
+        private async void Connect()
         {
             if (_gpsManager.IsListening)
             {
@@ -86,7 +56,10 @@ namespace TrickleToTide.Mobile.ViewModels
                 });
             }
 
-            OnPropertyChanged("IsTracking");
+            MessagingCenter.Send<IGpsManager>(_gpsManager, "GpsConnectionChanged");
+            OnPropertyChanged("GpsConnected");
         }
+
+        public string ConnectionStatus => Xamarin.Essentials.Connectivity.NetworkAccess.ToString() + " / " + string.Join(", ",Xamarin.Essentials.Connectivity.ConnectionProfiles.Select(x=>x.ToString()));
     }
 }
