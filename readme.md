@@ -26,4 +26,4 @@ You'll need to add a secrets.xml file to Resources\values with the following con
 </resources>
 ```
 
-![Deploy DotNet project to Azure Function App](https://github.com/RandomBlueThing/TrickleToTide/workflows/Deploy%20DotNet%20project%20to%20Azure%20Function%20App/badge.svg)
+![Deploy API](https://github.com/RandomBlueThing/TrickleToTide/workflows/Deploy%20API/badge.svg)
