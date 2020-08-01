@@ -8,32 +8,74 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using TrickleToTide.Common;
+using TrickleToTide.Api.DAL;
+using Microsoft.EntityFrameworkCore;
 
 namespace TrickleToTide.Api
 {
-    public static class Updates
+    class Updates
     {
+        private readonly PositionContext _context;
+
+        public Updates(PositionContext context)
+        {
+            _context = context;
+        }
+
+
         [FunctionName("update")]
-        public static async Task<IActionResult> Update(
+        public async Task<IActionResult> Update(
             [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("update");
-
-            
             var content = await new StreamReader(req.Body).ReadToEndAsync();
             
             log.LogInformation(content);
             
-            var entry = JsonConvert.DeserializeObject<PositionUpdate>(content);
+            var source = JsonConvert.DeserializeObject<PositionUpdate>(content);
 
-            await Task.CompletedTask;
+            var position = await _context.Positions.SingleOrDefaultAsync(p => p.Id == source.Id);
+            if(position == null)
+            {
+                position = new Position()
+                {
+                    Id = source.Id
+                };
+                _context.Positions.Add(position);
+            }
+
+            position.Nickname = source.Nick;
+            position.Latitude = source.Lat;
+            position.Longitude = source.Lon;
+            position.Altitude = source.Alt;
+            position.Heading = source.Heading;
+            position.Speed = source.Speed;
+            position.Timestamp = source.Timestamp;
+            position.Accuracy = source.Accuracy;
+
+            position.History.Add(new PositionHistory()
+            {
+                Accuracy = position.Accuracy,
+                Altitude = position.Altitude,
+                Timestamp = position.Timestamp,
+                Speed = position.Speed,
+                Heading = position.Heading,
+                Latitude = position.Latitude,
+                Longitude = position.Longitude
+            });
+
+            await _context.SaveChangesAsync();
+
             return new OkResult();
         }
 
 
+        private void Update(Position position, PositionUpdate source)
+        {
+        }
+
         [FunctionName("ping")]
-        public static async Task<IActionResult> Ping(
+        public async Task<IActionResult> Ping(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
             ILogger log)
         {
