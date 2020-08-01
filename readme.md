@@ -23,6 +23,7 @@ You'll need to add a secrets.xml file to Resources\values with the following con
 <resources>
   <string name="api_key_google_maps">MAPS API KEY</string>
   <string name="api_key_ttt">TTT SERVICE API KEY</string>
+  <string name="api_endpoint_ttt">TTT SERVICE ENDPOINT</string>
 </resources>
 ```
 

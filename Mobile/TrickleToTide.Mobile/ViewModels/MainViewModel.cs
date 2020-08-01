@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TrickleToTide.Common;
 using TrickleToTide.Mobile.Delegates;
 using TrickleToTide.Mobile.Services;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace TrickleToTide.Mobile.ViewModels
@@ -15,10 +16,18 @@ namespace TrickleToTide.Mobile.ViewModels
     class MainViewModel : BaseViewModel
     {
         private readonly IGpsManager _gpsManager;
-        
+        private readonly Guid _id;
+
         public MainViewModel()
         {
             _gpsManager = ShinyHost.Resolve<IGpsManager>();
+
+            if (!Preferences.ContainsKey("ttt-id"))
+            {
+                Preferences.Set("ttt-id", Guid.NewGuid().ToString());
+            }
+
+            _id = Guid.Parse(Preferences.Get("ttt-id", Guid.Empty.ToString()));
 
             MessagingCenter.Subscribe<GpsDelegate, IGpsReading>(this, "OnReading", async (sender, reading) =>
             {
@@ -28,13 +37,15 @@ namespace TrickleToTide.Mobile.ViewModels
                     {
                         await Api.UpdatePositionAsync(new PositionUpdate()
                         {
+                            Id = _id,
                             Lat = reading.Position.Latitude,
                             Lon = reading.Position.Longitude,
                             Alt = reading.Altitude,
                             Accuracy = reading.PositionAccuracy,
                             Heading = reading.Heading,
                             Speed = reading.Speed,                            
-                            Timestamp = reading.Timestamp
+                            Timestamp = reading.Timestamp,
+                            Nick = ""
                         });
                         LastUpdateOn = DateTime.Now;
                     }

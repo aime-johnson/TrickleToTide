@@ -14,8 +14,8 @@ namespace TrickleToTide.Mobile.Droid.Services
 {
    class PlatformService : Interfaces.IPlatform
     {
-        public string ApiKey => "";
+        public string ApiKey=> Application.Context.Resources.GetString(Resource.String.api_key_ttt);
 
-        public string ApiEndpoint => "https://swampnet-ttt.azurewebsites.net";
+        public string ApiEndpoint => Application.Context.Resources.GetString(Resource.String.api_endpoint_ttt);
     }
 }

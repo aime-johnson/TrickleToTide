@@ -18,7 +18,7 @@ namespace TrickleToTide.Mobile.Services
         private static readonly string _endpoint;
         private static readonly int _throttleSeconds = 60;
 
-        private static Stopwatch _lastUpdate = Stopwatch.StartNew();
+        private static DateTime _lastUpdate = DateTime.MinValue;
 
         static Api()
         {
@@ -29,12 +29,12 @@ namespace TrickleToTide.Mobile.Services
             _endpoint = DependencyService.Resolve<IPlatform>().ApiEndpoint;
         }
 
+
         public async static Task UpdatePositionAsync(PositionUpdate position)
         {
             // Throttle updates
-            if(_lastUpdate.Elapsed.TotalSeconds > _throttleSeconds)
+            if(_lastUpdate.AddSeconds(_throttleSeconds) < DateTime.Now)
             {
-                await Task.CompletedTask;
                 var rs = await _client.PostAsync(
                     _endpoint + "/api/update",
                     new StringContent(
@@ -44,7 +44,7 @@ namespace TrickleToTide.Mobile.Services
 
                 rs.EnsureSuccessStatusCode();
 
-                _lastUpdate.Restart();
+                _lastUpdate = DateTime.Now;
             }
         }
     }
