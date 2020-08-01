@@ -45,15 +45,18 @@ namespace TrickleToTide.Mobile.ViewModels
                             Heading = reading.Heading,
                             Speed = reading.Speed,                            
                             Timestamp = reading.Timestamp,
-                            Nick = ""
+                            Nick = Preferences.Get("ttt-nick", "")
                         });
                         LastUpdateOn = DateTime.Now;
                     }
-                    catch
+                    catch(Exception ex)
                     {
-                        // noop
+                        Log.Event(ex.Message);
                     }
                 }
+
+                Preferences.Set("ttt-lat", reading.Position.Latitude);
+                Preferences.Set("ttt-lon", reading.Position.Longitude);
             });
 
             MessagingCenter.Subscribe<IGpsManager>(this, "GpsConnectionChanged", (sender) => {

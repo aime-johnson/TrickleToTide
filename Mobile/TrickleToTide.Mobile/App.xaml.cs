@@ -28,6 +28,7 @@ namespace TrickleToTide.Mobile
 
         protected async override void OnStart()
         {
+            Log.Event("Start");
             var gpsManager = ShinyHost.Resolve<IGpsManager>();
 
             await gpsManager.RequestAccessAndStart(new GpsRequest()

@@ -37,6 +37,9 @@
         <Tab Title="Settings" Icon="tab_feed.png">
             <ShellContent ContentTemplate="{DataTemplate local:SettingsPage}" />
         </Tab>
+        <Tab Title="Log" Icon="tab_feed.png">
+            <ShellContent ContentTemplate="{DataTemplate local:LogPage}" />
+        </Tab>
     </TabBar>
 
     <!--<FlyoutItem Title="Main" Icon="tab_feed.png">

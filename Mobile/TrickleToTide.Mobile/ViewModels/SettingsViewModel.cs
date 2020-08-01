@@ -9,6 +9,7 @@ using TrickleToTide.Common;
 using TrickleToTide.Mobile.Delegates;
 using TrickleToTide.Mobile.Interfaces;
 using TrickleToTide.Mobile.Services;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace TrickleToTide.Mobile.ViewModels
@@ -61,5 +62,15 @@ namespace TrickleToTide.Mobile.ViewModels
         }
 
         public string ConnectionStatus => Xamarin.Essentials.Connectivity.NetworkAccess.ToString() + " / " + string.Join(", ",Xamarin.Essentials.Connectivity.ConnectionProfiles.Select(x=>x.ToString()));
+
+        public string Nickname
+        {
+            get { return Preferences.Get("ttt-nick", ""); }
+            set 
+            { 
+                Preferences.Set("ttt-nick", value);
+                OnPropertyChanged();
+            }
+        }
     }
 }

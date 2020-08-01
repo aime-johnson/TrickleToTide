@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TrickleToTide.Mobile.Delegates;
 using TrickleToTide.Mobile.ViewModels;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
 using Xamarin.Forms.Xaml;
@@ -19,7 +20,11 @@ namespace TrickleToTide.Mobile.Views
         {
             InitializeComponent();
 
-            this.BindingContext = new MainViewModel();
+            BindingContext = new MainViewModel();
+
+            var lat = Preferences.Get("ttt-lat", 51.489271);
+            var lon = Preferences.Get("ttt-lon", -0.235422);
+            map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(lat, lon), new Distance(100)));
 
             MessagingCenter.Subscribe<GpsDelegate, IGpsReading>(this, "OnReading", (sender, reading) =>
             {

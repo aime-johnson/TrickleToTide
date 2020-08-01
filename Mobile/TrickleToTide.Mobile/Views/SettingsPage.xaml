@@ -6,24 +6,20 @@
              mc:Ignorable="d"
              x:Class="TrickleToTide.Mobile.Views.SettingsPage">
     <ContentPage.Content>
-        <StackLayout Orientation="Vertical">
-            <Button Text="Boosh" Command="{Binding ConnectCommand}" Margin="10"/>
-            <Label Margin="10">
-                <Label.FormattedText>
-                    <FormattedString>
-                        <Span Text="GPS Connected: "/>
-                        <Span Text="{Binding GpsConnected}"/>
-                    </FormattedString>
-                </Label.FormattedText>
-            </Label>
-            <Label Margin="10">
-                <Label.FormattedText>
-                    <FormattedString>
-                        <Span Text="ConnectionStatus: "/>
-                        <Span Text="{Binding ConnectionStatus}"/>
-                    </FormattedString>
-                </Label.FormattedText>
-            </Label>
-        </StackLayout>
+        <TableView Intent="Settings" VerticalOptions="Start">
+            <TableSection Title="Connections">
+                <TextCell Text="GPS Connected" Detail="{Binding GpsConnected}"/>
+                <TextCell Text="Connection Status" Detail="{Binding ConnectionStatus}"/>
+
+                <ViewCell>
+                    <Button Text="Connect GPS" Command="{Binding ConnectCommand}"/>
+                </ViewCell>
+            </TableSection>
+
+
+            <TableSection Title="User Prefs">
+                <EntryCell Label="Name" Text="{Binding Nickname}"/>
+            </TableSection>
+        </TableView>
     </ContentPage.Content>
 </ContentPage>

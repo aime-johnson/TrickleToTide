@@ -24,7 +24,7 @@ namespace TrickleToTide.Mobile.Services
         {
             _client = new HttpClient();
             _client.DefaultRequestHeaders.Add("x-functions-key", DependencyService.Resolve<IPlatform>().ApiKey);
-            _client.Timeout = TimeSpan.FromSeconds(30);
+            _client.Timeout = TimeSpan.FromSeconds(120);
 
             _endpoint = DependencyService.Resolve<IPlatform>().ApiEndpoint;
         }
@@ -35,6 +35,8 @@ namespace TrickleToTide.Mobile.Services
             // Throttle updates
             if(_lastUpdate.AddSeconds(_throttleSeconds) < DateTime.Now)
             {
+                Log.Event("Update");
+
                 var rs = await _client.PostAsync(
                     _endpoint + "/api/update",
                     new StringContent(
