@@ -59,7 +59,10 @@ namespace TrickleToTide.Mobile.ViewModels
 
             MessagingCenter.Send<IGpsManager>(_gpsManager, "GpsConnectionChanged");
             OnPropertyChanged("GpsConnected");
+            OnPropertyChanged("ConnectCommandDescription");
         }
+
+        public string ConnectCommandDescription => _gpsManager.IsListening ? "Disconnect GPS" : "Connect GPS";
 
         public string ConnectionStatus => Xamarin.Essentials.Connectivity.NetworkAccess.ToString() + " / " + string.Join(", ",Xamarin.Essentials.Connectivity.ConnectionProfiles.Select(x=>x.ToString()));
 

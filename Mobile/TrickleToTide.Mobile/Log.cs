@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 
 namespace TrickleToTide.Mobile
@@ -10,9 +11,15 @@ namespace TrickleToTide.Mobile
         public static ObservableCollection<LogEvent> Events { get; } = new ObservableCollection<LogEvent>();
         public static void Event(string message)
         {
-            Events.Add(new LogEvent() {
+            Events.Insert(0, new LogEvent()
+            {
                 Message = message
             });
+
+            while(Events.Count() > 1000)
+            {
+                Events.RemoveAt(Events.Count()-1);
+            }
         }
     }
 

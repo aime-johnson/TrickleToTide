@@ -12,13 +12,13 @@
                 <TextCell Text="Connection Status" Detail="{Binding ConnectionStatus}"/>
 
                 <ViewCell>
-                    <Button Text="Connect GPS" Command="{Binding ConnectCommand}"/>
+                    <Button Text="{Binding ConnectCommandDescription}" Command="{Binding ConnectCommand}"/>
                 </ViewCell>
             </TableSection>
 
 
             <TableSection Title="User Prefs">
-                <EntryCell Label="Name" Text="{Binding Nickname}"/>
+                <EntryCell Label="Name" Text="{Binding Nickname}" />
             </TableSection>
         </TableView>
     </ContentPage.Content>

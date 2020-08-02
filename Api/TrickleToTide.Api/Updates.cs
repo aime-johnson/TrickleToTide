@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -44,10 +45,10 @@ namespace TrickleToTide.Api
                 _context.Positions.Add(position);
             }
 
-            position.Nickname = source.Nick;
-            position.Latitude = source.Lat;
-            position.Longitude = source.Lon;
-            position.Altitude = source.Alt;
+            position.Nickname = source.Nickname;
+            position.Latitude = source.Latitude;
+            position.Longitude = source.Longitude;
+            position.Altitude = source.Altitude;
             position.Heading = source.Heading;
             position.Speed = source.Speed;
             position.Timestamp = source.Timestamp;
@@ -70,10 +71,6 @@ namespace TrickleToTide.Api
         }
 
 
-        private void Update(Position position, PositionUpdate source)
-        {
-        }
-
         [FunctionName("ping")]
         public async Task<IActionResult> Ping(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
@@ -83,6 +80,26 @@ namespace TrickleToTide.Api
 
             await Task.CompletedTask;
             return new OkObjectResult($"Pong: {DateTime.UtcNow}");
+        }
+
+
+        [FunctionName("latest")]
+        public async Task<IActionResult> LatestPositions(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
+            ILogger log)
+        {
+            var positions = await _context.Positions.OrderByDescending(p=>p.Timestamp).ToArrayAsync();
+            return new OkObjectResult(positions.Select(p=>new PositionUpdate() { 
+                Id = p.Id,
+                Timestamp = p.Timestamp,
+                Accuracy = p.Accuracy,
+                Altitude = p.Altitude,
+                Heading = p.Heading,
+                Latitude = p.Latitude,
+                Longitude = p.Longitude,
+                Nickname = p.Nickname,
+                Speed = p.Speed
+            }));
         }
     }
 }

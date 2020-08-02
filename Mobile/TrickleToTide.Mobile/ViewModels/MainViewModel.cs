@@ -38,14 +38,14 @@ namespace TrickleToTide.Mobile.ViewModels
                         await Api.UpdatePositionAsync(new PositionUpdate()
                         {
                             Id = _id,
-                            Lat = reading.Position.Latitude,
-                            Lon = reading.Position.Longitude,
-                            Alt = reading.Altitude,
+                            Latitude = reading.Position.Latitude,
+                            Longitude = reading.Position.Longitude,
+                            Altitude = reading.Altitude,
                             Accuracy = reading.PositionAccuracy,
                             Heading = reading.Heading,
                             Speed = reading.Speed,                            
                             Timestamp = reading.Timestamp,
-                            Nick = Preferences.Get("ttt-nick", "")
+                            Nickname = Preferences.Get("ttt-nick", "")
                         });
                         LastUpdateOn = DateTime.Now;
                     }
