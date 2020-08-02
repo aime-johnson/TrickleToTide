@@ -1,6 +1,7 @@
 ﻿using Shiny;
 using Shiny.Locations;
 using System;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -8,6 +9,7 @@ namespace TrickleToTide.Mobile
 {
     public partial class App : Application
     {
+        private IGpsManager _gpsManager;
 
         public App()
         {
@@ -15,7 +17,8 @@ namespace TrickleToTide.Mobile
 
             //DependencyService.Register<MockDataStore>();
 
-            Xamarin.Essentials.Connectivity.ConnectivityChanged += ConnectivityChanged;
+            Connectivity.ConnectivityChanged += ConnectivityChanged;
+            DeviceDisplay.KeepScreenOn = true;
 
             MainPage = new AppShell();
         }
@@ -29,16 +32,16 @@ namespace TrickleToTide.Mobile
         protected async override void OnStart()
         {
             Log.Event("Start");
-            var gpsManager = ShinyHost.Resolve<IGpsManager>();
+            _gpsManager = ShinyHost.Resolve<IGpsManager>();
 
-            await gpsManager.RequestAccessAndStart(new GpsRequest()
+            await _gpsManager.RequestAccessAndStart(new GpsRequest()
             {
                 Interval = TimeSpan.FromSeconds(10),
                 Priority = GpsPriority.Highest,
                 UseBackground = true
             });
 
-            MessagingCenter.Send<IGpsManager>(gpsManager, "GpsConnectionChanged");
+            MessagingCenter.Send<IGpsManager>(_gpsManager, "GpsConnectionChanged");
         }
 
         protected override void OnSleep()
