@@ -43,10 +43,12 @@ namespace TrickleToTide.Mobile
 
         protected override void OnSleep()
         {
+            Log.Event("Sleep");
         }
 
         protected override void OnResume()
         {
+            Log.Event("Resume");
         }
     }
 }

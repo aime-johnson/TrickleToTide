@@ -65,6 +65,7 @@ namespace TrickleToTide.Mobile.ViewModels
                     IsTracking = false;
                 }
                 StartCommand.ChangeCanExecute();
+                Log.Event($"GPS Connection listening: {sender.IsListening}");
             });
 
         }
@@ -85,7 +86,8 @@ namespace TrickleToTide.Mobile.ViewModels
         }
         private void Start(object obj)
         {
-            IsTracking = true;            
+            IsTracking = true;
+            Log.Event("Start Tracking");
         }
 
         private Command _stopCommand;
@@ -97,6 +99,7 @@ namespace TrickleToTide.Mobile.ViewModels
         private void Stop(object obj)
         {
             IsTracking = false;
+            Log.Event("Stop Tracking");
         }
 
 

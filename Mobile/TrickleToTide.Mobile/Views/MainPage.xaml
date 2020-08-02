@@ -5,7 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
              mc:Ignorable="d"
-             x:Class="TrickleToTide.Mobile.Views.MainPage">
+             x:Class="TrickleToTide.Mobile.Views.MainPage"
+             Title="Main">
     <ContentPage.Content>
         <Grid>
             <maps:Map x:Name="map"

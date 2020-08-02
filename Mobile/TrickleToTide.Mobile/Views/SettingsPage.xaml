@@ -4,22 +4,38 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="TrickleToTide.Mobile.Views.SettingsPage">
+             x:Class="TrickleToTide.Mobile.Views.SettingsPage"
+             Title="Settings">
     <ContentPage.Content>
         <TableView Intent="Settings" VerticalOptions="Start">
-            <TableSection Title="Connections">
-                <TextCell Text="GPS Connected" Detail="{Binding GpsConnected}"/>
-                <TextCell Text="Connection Status" Detail="{Binding ConnectionStatus}"/>
+            <TableSection Title="User Prefs">
+                <EntryCell Label="Name" Text="{Binding Nickname}" />
+            </TableSection>
 
+            <TableSection Title="Connections">
+                <ViewCell>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Column="0" Grid.Row="0" Text="GPS Connected"/>
+                        <Label Grid.Column="1" Grid.Row="0" Text="{Binding GpsConnected}" FontAttributes="Bold"/>
+
+                        <Label Grid.Column="0" Grid.Row="1" Text="Connection Status"/>
+                        <Label Grid.Column="1" Grid.Row="1" Text="{Binding ConnectionStatus}" FontAttributes="Bold"/>
+                    </Grid>
+                </ViewCell>
                 <ViewCell>
                     <Button Text="{Binding ConnectCommandDescription}" Command="{Binding ConnectCommand}"/>
                 </ViewCell>
             </TableSection>
 
 
-            <TableSection Title="User Prefs">
-                <EntryCell Label="Name" Text="{Binding Nickname}" />
-            </TableSection>
         </TableView>
     </ContentPage.Content>
 </ContentPage>
