@@ -26,5 +26,5 @@ You'll need to add a secrets.xml file to Resources\values with the following con
   <string name="api_endpoint_ttt">TTT SERVICE ENDPOINT</string>
 </resources>
 ```
-
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Deploy API](https://github.com/RandomBlueThing/TrickleToTide/workflows/Deploy%20API/badge.svg)
