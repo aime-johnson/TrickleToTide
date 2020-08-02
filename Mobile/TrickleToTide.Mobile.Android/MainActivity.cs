@@ -38,16 +38,15 @@ namespace TrickleToTide.Mobile.Droid
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-            this.ShinyRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+            this.ShinyRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 
 
         protected override void OnNewIntent(Intent intent)
         {
             base.OnNewIntent(intent);
-
             this.ShinyOnNewIntent(intent);
         }
     }
