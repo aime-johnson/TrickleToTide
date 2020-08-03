@@ -17,5 +17,20 @@ namespace TrickleToTide.Mobile.Droid.Services
         public string ApiKey=> Application.Context.Resources.GetString(Resource.String.api_key_ttt);
 
         public string ApiEndpoint => Application.Context.Resources.GetString(Resource.String.api_endpoint_ttt);
+
+        public string LogDirectory
+        {
+            get
+            {
+                if (Android.OS.Environment.MediaMounted.Equals(Android.OS.Environment.ExternalStorageState))
+                {
+                    return Application.Context.GetExternalFilesDir(null).AbsolutePath;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
     }
 }

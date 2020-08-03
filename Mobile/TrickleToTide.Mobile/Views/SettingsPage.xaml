@@ -14,20 +14,23 @@
 
             <TableSection Title="Connections">
                 <ViewCell>
-                    <Grid>
+                    <Grid VerticalOptions="Center">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="150"/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <Label Grid.Column="0" Grid.Row="0" Text="GPS Connected"/>
-                        <Label Grid.Column="1" Grid.Row="0" Text="{Binding GpsConnected}" FontAttributes="Bold"/>
-
-                        <Label Grid.Column="0" Grid.Row="1" Text="Connection Status"/>
-                        <Label Grid.Column="1" Grid.Row="1" Text="{Binding ConnectionStatus}" FontAttributes="Bold"/>
+                        <Label Grid.Column="0" Text="GPS Connected"/>
+                        <Label Grid.Column="1" Text="{Binding GpsConnected}" FontAttributes="Bold"/>
+                    </Grid>
+                </ViewCell>
+                <ViewCell>
+                    <Grid VerticalOptions="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Text="Connection Status"/>
+                        <Label Grid.Column="1" Text="{Binding ConnectionStatus}" FontAttributes="Bold"/>
                     </Grid>
                 </ViewCell>
                 <ViewCell>

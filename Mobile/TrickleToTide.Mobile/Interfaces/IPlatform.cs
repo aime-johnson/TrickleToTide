@@ -14,5 +14,6 @@ namespace TrickleToTide.Mobile.Interfaces
         /// </summary>
         string ApiKey { get; }
         string ApiEndpoint { get; }
+        string LogDirectory { get; }
     }
 }

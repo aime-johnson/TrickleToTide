@@ -47,7 +47,6 @@ namespace TrickleToTide.Mobile.ViewModels
                             Timestamp = reading.Timestamp,
                             Nickname = Preferences.Get("ttt-nick", "")
                         });
-                        LastUpdateOn = DateTime.Now;
                     }
                     catch(Exception ex)
                     {
@@ -70,12 +69,6 @@ namespace TrickleToTide.Mobile.ViewModels
 
         }
 
-        private DateTime? _lastUpdateOn;
-        public DateTime? LastUpdateOn
-        {
-            get { return _lastUpdateOn; }
-            set { SetProperty(ref _lastUpdateOn, value); }
-        }
 
 
         private Command _startCommand;

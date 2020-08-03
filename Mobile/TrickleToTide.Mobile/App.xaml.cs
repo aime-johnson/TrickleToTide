@@ -1,6 +1,8 @@
 ﻿using Shiny;
 using Shiny.Locations;
 using System;
+using System.Threading;
+using TrickleToTide.Mobile.Services;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -32,6 +34,7 @@ namespace TrickleToTide.Mobile
         protected async override void OnStart()
         {
             Log.Event("Start");
+            
             _gpsManager = ShinyHost.Resolve<IGpsManager>();
 
             await _gpsManager.RequestAccessAndStart(new GpsRequest()
@@ -43,6 +46,7 @@ namespace TrickleToTide.Mobile
 
             MessagingCenter.Send<IGpsManager>(_gpsManager, "GpsConnectionChanged");
         }
+
 
         protected override void OnSleep()
         {

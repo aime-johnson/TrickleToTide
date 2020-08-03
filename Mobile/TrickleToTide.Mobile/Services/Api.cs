@@ -36,17 +36,22 @@ namespace TrickleToTide.Mobile.Services
             if(_lastUpdate.AddSeconds(_throttleSeconds) < DateTime.Now)
             {
                 Log.Event("Update");
+                try
+                {
+                    var rs = await _client.PostAsync(
+                        _endpoint + "/api/update",
+                        new StringContent(
+                            JsonConvert.SerializeObject(position),
+                            Encoding.UTF8,
+                            "application/json"));
 
-                var rs = await _client.PostAsync(
-                    _endpoint + "/api/update",
-                    new StringContent(
-                        JsonConvert.SerializeObject(position),
-                        Encoding.UTF8,
-                        "application/json"));
-
-                rs.EnsureSuccessStatusCode();
-
-                _lastUpdate = DateTime.Now;
+                    rs.EnsureSuccessStatusCode();
+                    _lastUpdate = DateTime.Now;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex);
+                }
             }
         }
     }

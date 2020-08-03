@@ -14,9 +14,7 @@
                       HasScrollEnabled="False"
                       IsShowingUser="True"
                       />
-            <StackLayout Orientation="Horizontal" VerticalOptions="Start">
-                <Label Padding="10" Text="{Binding LastUpdateOn}"/>
-            </StackLayout>
+            
             <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="End">
                 <Button x:Name="startButton" Margin="10" Padding="10" Text="Start" Command="{Binding StartCommand}"/>
                 <Button x:Name="stopButton" Margin="10" Padding="10" Text="Stop" Command="{Binding StopCommand}"/>
