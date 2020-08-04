@@ -10,6 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Shiny;
+using TrickleToTide.Mobile.Droid.Services;
 
 namespace TrickleToTide.Mobile.Droid
 {
@@ -27,6 +28,7 @@ namespace TrickleToTide.Mobile.Droid
 
         public override void OnCreate()
         {
+            Android.App.Application.Context.StartForegroundService<myLocationService>();
             base.OnCreate();
         }
     }
