@@ -28,7 +28,7 @@ namespace TrickleToTide.Mobile.Droid
 
         public override void OnCreate()
         {
-            Android.App.Application.Context.StartForegroundService<myLocationService>();
+            //Android.App.Application.Context.StartForegroundService<KeepAliveService>();
             base.OnCreate();
         }
     }

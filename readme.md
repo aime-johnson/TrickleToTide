@@ -16,7 +16,7 @@ http://adventurelog.co.uk/ttt/
 
 ### Android Setup
 
-You'll need to add a secrets.xml file to Resources\values with the following content:
+You'll need to add a secrets.xml file to Resources\values with a build action of AndroidResource and the following content:
 
 ```
 <?xml version="1.0" encoding="utf-8" ?>

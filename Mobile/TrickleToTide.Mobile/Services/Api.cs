@@ -12,7 +12,7 @@ using Xamarin.Forms;
 
 namespace TrickleToTide.Mobile.Services
 {
-    static class Api
+    public static class Api
     {
         private static readonly HttpClient _client;
         private static readonly string _endpoint;

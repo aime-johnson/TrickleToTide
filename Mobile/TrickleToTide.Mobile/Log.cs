@@ -10,7 +10,7 @@ using Xamarin.Forms;
 
 namespace TrickleToTide.Mobile
 {
-    static class Log
+    public static class Log
     {
         public static ObservableCollection<LogEvent> Events { get; } = new ObservableCollection<LogEvent>();
         public static string LogDirectory { get; private set; }
