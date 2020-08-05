@@ -4,6 +4,7 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
+             xmlns:ctl="clr-namespace:TrickleToTide.Mobile.Controls"
              mc:Ignorable="d"
              x:Class="TrickleToTide.Mobile.Views.MainPage"
              Title="Main">
@@ -19,7 +20,7 @@
             HasScrollEnabled="False"
             IsShowingUser="True"
             -->
-            <maps:Map x:Name="map"
+            <!--<maps:Map x:Name="map"
                       ItemsSource="{Binding Positions}">
                 <maps:Map.ItemTemplate>
                     <DataTemplate>
@@ -28,7 +29,17 @@
                                   Label="{Binding Description}"/>
                     </DataTemplate>
                 </maps:Map.ItemTemplate>
-            </maps:Map>
+            </maps:Map>-->
+
+            <ctl:CustomMap x:Name="map" ItemsSource="{Binding Positions}">
+                <ctl:CustomMap.ItemTemplate>
+                    <DataTemplate>
+                        <maps:Pin Position="{Binding Position}"
+                                  Address="{Binding Address}"
+                                  Label="{Binding Description}"/>
+                    </DataTemplate>
+                </ctl:CustomMap.ItemTemplate>
+            </ctl:CustomMap>
             
             <!--<StackLayout Orientation="Horizontal" VerticalOptions="Start" HorizontalOptions="Center">
                 <ImageButton Source="play_circle" Command="{Binding StartCommand}"/>

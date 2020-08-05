@@ -79,6 +79,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomRenderers\CustomMapRenderer.cs" />
     <Compile Include="Extensions\Context.extensions.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="MainApplication.cs" />
