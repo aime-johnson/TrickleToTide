@@ -22,8 +22,8 @@ namespace TrickleToTide.Mobile.Views
 
             BindingContext = new MainViewModel();
 
-            var lat = Preferences.Get("ttt-lat", 51.489271);
-            var lon = Preferences.Get("ttt-lon", -0.235422);
+            var lat = Preferences.Get(Constants.Preferences.LAST_LATITUDE, 51.489271);
+            var lon = Preferences.Get(Constants.Preferences.LAST_LONGITUDE, -0.235422);
             map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(lat, lon), new Distance(100)));
 
             MessagingCenter.Subscribe<GpsDelegate, IGpsReading>(this, Constants.Message.LOCATION_UPDATED, (sender, reading) =>

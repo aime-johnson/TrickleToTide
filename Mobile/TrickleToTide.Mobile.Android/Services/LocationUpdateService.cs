@@ -33,7 +33,7 @@ namespace TrickleToTide.Mobile.Droid.Services
 
         public LocationUpdateService()
         {
-            _id = Guid.Parse(Preferences.Get("ttt-id", Guid.Empty.ToString()));
+            _id = Guid.Parse(Preferences.Get(Constants.Preferences.ID, Guid.Empty.ToString()));
             _gpsManager = ShinyHost.Resolve<IGpsManager>();
 
             MessagingCenter.Subscribe<GpsDelegate, IGpsReading>(this, Constants.Message.LOCATION_UPDATED, async (sender, reading) =>
@@ -52,7 +52,7 @@ namespace TrickleToTide.Mobile.Droid.Services
                             Heading = reading.Heading,
                             Speed = reading.Speed,
                             Timestamp = reading.Timestamp,
-                            Nickname = Preferences.Get("ttt-nick", "")
+                            Nickname = Preferences.Get(Constants.Preferences.NICKNAME, "")
                         });
 
                         if(positions != null)
@@ -66,8 +66,8 @@ namespace TrickleToTide.Mobile.Droid.Services
                     }
                 }
 
-                Preferences.Set("ttt-lat", reading.Position.Latitude);
-                Preferences.Set("ttt-lon", reading.Position.Longitude);
+                Preferences.Set(Constants.Preferences.LAST_LATITUDE, reading.Position.Latitude);
+                Preferences.Set(Constants.Preferences.LAST_LONGITUDE, reading.Position.Longitude);
             });
         }
 
@@ -77,14 +77,14 @@ namespace TrickleToTide.Mobile.Droid.Services
             {
                 if (_id == default(Guid))
                 {
-                    if (!Preferences.ContainsKey("ttt-id"))
+                    if (!Preferences.ContainsKey(Constants.Preferences.ID))
                     {
                         _id = Guid.NewGuid();
-                        Preferences.Set("ttt-id", _id.ToString());
+                        Preferences.Set(Constants.Preferences.ID, _id.ToString());
                     }
                     else
                     {
-                        _id = Guid.Parse(Preferences.Get("ttt-id", Guid.Empty.ToString()));
+                        _id = Guid.Parse(Preferences.Get(Constants.Preferences.ID, Guid.Empty.ToString()));
                     }
                 }
                 return _id;

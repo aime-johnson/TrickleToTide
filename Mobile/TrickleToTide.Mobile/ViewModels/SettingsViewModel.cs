@@ -53,10 +53,10 @@ namespace TrickleToTide.Mobile.ViewModels
 
         public string Nickname
         {
-            get { return Preferences.Get("ttt-nick", ""); }
+            get { return Preferences.Get(Constants.Preferences.NICKNAME, ""); }
             set 
             { 
-                Preferences.Set("ttt-nick", value);
+                Preferences.Set(Constants.Preferences.NICKNAME, value);
                 OnPropertyChanged();
             }
         }
