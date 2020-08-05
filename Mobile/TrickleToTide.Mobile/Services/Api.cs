@@ -35,7 +35,7 @@ namespace TrickleToTide.Mobile.Services
             // Throttle updates
             if(_lastUpdate.AddSeconds(_throttleSeconds) < DateTime.Now)
             {
-                Log.Event("Update");
+                Log.Event($"Update ({position.Latitude:0.000}, {position.Longitude:0.000})");
                 try
                 {
                     var rs = await _client.PostAsync(

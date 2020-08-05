@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,17 +27,14 @@ namespace TrickleToTide.Mobile.Droid.Services
 {
     class LocationUpdateService : ILocationUpdates
     {
-        private readonly Guid _id;
+        private Guid _id;
         private readonly IGpsManager _gpsManager;
+        private bool _xxx = false;
 
         public LocationUpdateService()
         {
             _id = Guid.Parse(Preferences.Get("ttt-id", Guid.Empty.ToString()));
             _gpsManager = ShinyHost.Resolve<IGpsManager>();
-
-            StartGps();
-
-            MessagingCenter.Send<IGpsManager>(_gpsManager, "GpsConnectionChanged");
 
             MessagingCenter.Subscribe<GpsDelegate, IGpsReading>(this, "OnReading", async (sender, reading) =>
             {
@@ -46,7 +44,7 @@ namespace TrickleToTide.Mobile.Droid.Services
                     {
                         await Api.UpdatePositionAsync(new PositionUpdate()
                         {
-                            Id = _id,
+                            Id = Id,
                             Latitude = reading.Position.Latitude,
                             Longitude = reading.Position.Longitude,
                             Altitude = reading.Altitude,
@@ -68,6 +66,25 @@ namespace TrickleToTide.Mobile.Droid.Services
             });
         }
 
+        public Guid Id
+        {
+            get
+            {
+                if (_id == default(Guid))
+                {
+                    if (!Preferences.ContainsKey("ttt-id"))
+                    {
+                        _id = Guid.NewGuid();
+                        Preferences.Set("ttt-id", _id.ToString());
+                    }
+                    else
+                    {
+                        _id = Guid.Parse(Preferences.Get("ttt-id", Guid.Empty.ToString()));
+                    }
+                }
+                return _id;
+            }
+        }
 
         public async void StartGps()
         {
@@ -86,6 +103,7 @@ namespace TrickleToTide.Mobile.Droid.Services
                 }
                 else
                 {
+                    _xxx = true;
                     Log.Event($"GPS Connected");
                     MessagingCenter.Send<IGpsManager>(_gpsManager, "GpsConnectionChanged");
                 }
@@ -103,7 +121,7 @@ namespace TrickleToTide.Mobile.Droid.Services
             }
         }
 
-        public bool IsGpsConnected => _gpsManager.IsListening;
+        public bool IsGpsConnected => _xxx && _gpsManager.IsListening;
 
         public void Start()
         {

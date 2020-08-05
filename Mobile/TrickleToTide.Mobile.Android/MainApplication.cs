@@ -25,11 +25,5 @@ namespace TrickleToTide.Mobile.Droid
             : base(handle, transer)
         {
         }
-
-        public override void OnCreate()
-        {
-            //Android.App.Application.Context.StartForegroundService<KeepAliveService>();
-            base.OnCreate();
-        }
     }
 }

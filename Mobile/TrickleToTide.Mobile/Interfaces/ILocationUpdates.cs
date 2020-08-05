@@ -14,5 +14,6 @@ namespace TrickleToTide.Mobile.Interfaces
         void Stop();
         bool IsRunning { get; }
         bool IsGpsConnected { get; }
+        Guid Id { get; }
     }
 }

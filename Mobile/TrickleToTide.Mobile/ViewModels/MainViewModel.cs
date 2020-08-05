@@ -15,11 +15,6 @@ namespace TrickleToTide.Mobile.ViewModels
         {
             _updates = DependencyService.Get<ILocationUpdates>();
 
-            if (!Preferences.ContainsKey("ttt-id"))
-            {
-                Preferences.Set("ttt-id", Guid.NewGuid().ToString());
-            }
-
             MessagingCenter.Subscribe<ILocationUpdates>(this, "fg", (sender) => {
                 StartCommand.ChangeCanExecute();
                 StopCommand.ChangeCanExecute();
