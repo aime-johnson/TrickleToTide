@@ -1,6 +1,8 @@
 ﻿using Shiny;
 using Shiny.Locations;
 using System;
+using System.Linq;
+using TrickleToTide.Common;
 using TrickleToTide.Mobile.Interfaces;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -15,12 +17,12 @@ namespace TrickleToTide.Mobile.ViewModels
         {
             _updates = DependencyService.Get<ILocationUpdates>();
 
-            MessagingCenter.Subscribe<ILocationUpdates>(this, "fg", (sender) => {
+            MessagingCenter.Subscribe<ILocationUpdates>(this, Constants.Message.TRACKING_STATE_CHANGED, (sender) => {
                 StartCommand.ChangeCanExecute();
                 StopCommand.ChangeCanExecute();
             });
 
-            MessagingCenter.Subscribe<IGpsManager>(this, "GpsConnectionChanged", (sender) => {
+            MessagingCenter.Subscribe<IGpsManager>(this, Constants.Message.GPS_STATE_CHANGED, (sender) => {
                 if (_updates.IsRunning && !sender.IsListening)
                 {
                     _updates.Stop();
@@ -28,6 +30,9 @@ namespace TrickleToTide.Mobile.ViewModels
                 StartCommand.ChangeCanExecute();
             });
 
+            MessagingCenter.Subscribe<PositionUpdate[]>(this, Constants.Message.POSITIONS_UPDATED, (positions)=> {
+                Log.Event($"{positions.Count()} positions");
+            });
         }
 
 

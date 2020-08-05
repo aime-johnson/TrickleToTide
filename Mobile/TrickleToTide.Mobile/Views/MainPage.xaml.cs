@@ -26,7 +26,7 @@ namespace TrickleToTide.Mobile.Views
             var lon = Preferences.Get("ttt-lon", -0.235422);
             map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(lat, lon), new Distance(100)));
 
-            MessagingCenter.Subscribe<GpsDelegate, IGpsReading>(this, "OnReading", (sender, reading) =>
+            MessagingCenter.Subscribe<GpsDelegate, IGpsReading>(this, Constants.Message.LOCATION_UPDATED, (sender, reading) =>
             {
                 map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(reading.Position.Latitude, reading.Position.Longitude), new Distance(100)));
             });

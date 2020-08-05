@@ -30,7 +30,7 @@ namespace TrickleToTide.Mobile.Services
         }
 
 
-        public async static Task UpdatePositionAsync(PositionUpdate position)
+        public async static Task<PositionUpdate[]> UpdatePositionAsync(PositionUpdate position)
         {
             // Throttle updates
             if(_lastUpdate.AddSeconds(_throttleSeconds) < DateTime.Now)
@@ -47,12 +47,17 @@ namespace TrickleToTide.Mobile.Services
 
                     rs.EnsureSuccessStatusCode();
                     _lastUpdate = DateTime.Now;
+
+                    var json = await rs.Content.ReadAsStringAsync();
+                    return JsonConvert.DeserializeObject<PositionUpdate[]>(json);
                 }
                 catch (Exception ex)
                 {
                     Log.Error(ex);
                 }
             }
+
+            return null;
         }
     }
 }

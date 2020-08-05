@@ -30,7 +30,7 @@ namespace TrickleToTide.Mobile
 
         private void ConnectivityChanged(object sender, Xamarin.Essentials.ConnectivityChangedEventArgs e)
         {
-            MessagingCenter.Send(this, "ConnectionChanged", e);
+            MessagingCenter.Send(this, Constants.Message.CONNECTION_STATE_CHANGED, e);
         }
 
 

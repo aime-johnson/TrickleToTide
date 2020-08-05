@@ -12,7 +12,7 @@ namespace TrickleToTide.Mobile.Delegates
     {
         public Task OnReading(IGpsReading reading)
         {
-            MessagingCenter.Send<GpsDelegate, IGpsReading>(this, "OnReading", reading);
+            MessagingCenter.Send<GpsDelegate, IGpsReading>(this, Constants.Message.LOCATION_UPDATED, reading);
 
             return Task.CompletedTask;
         }

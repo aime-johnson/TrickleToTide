@@ -36,13 +36,13 @@ namespace TrickleToTide.Mobile.Droid.Services
             _id = Guid.Parse(Preferences.Get("ttt-id", Guid.Empty.ToString()));
             _gpsManager = ShinyHost.Resolve<IGpsManager>();
 
-            MessagingCenter.Subscribe<GpsDelegate, IGpsReading>(this, "OnReading", async (sender, reading) =>
+            MessagingCenter.Subscribe<GpsDelegate, IGpsReading>(this, Constants.Message.LOCATION_UPDATED, async (sender, reading) =>
             {
                 if (IsRunning)
                 {
                     try
                     {
-                        await Api.UpdatePositionAsync(new PositionUpdate()
+                        var positions = await Api.UpdatePositionAsync(new PositionUpdate()
                         {
                             Id = Id,
                             Latitude = reading.Position.Latitude,
@@ -54,6 +54,11 @@ namespace TrickleToTide.Mobile.Droid.Services
                             Timestamp = reading.Timestamp,
                             Nickname = Preferences.Get("ttt-nick", "")
                         });
+
+                        if(positions != null)
+                        {
+                            MessagingCenter.Send<PositionUpdate[]>(positions, Constants.Message.POSITIONS_UPDATED);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -105,7 +110,7 @@ namespace TrickleToTide.Mobile.Droid.Services
                 {
                     _xxx = true;
                     Log.Event($"GPS Connected");
-                    MessagingCenter.Send<IGpsManager>(_gpsManager, "GpsConnectionChanged");
+                    MessagingCenter.Send<IGpsManager>(_gpsManager, Constants.Message.GPS_STATE_CHANGED);
                 }
             }
         }
@@ -117,7 +122,7 @@ namespace TrickleToTide.Mobile.Droid.Services
             {
                 await _gpsManager.StopListener();
                 Log.Event($"GPS Disconnected");
-                MessagingCenter.Send<IGpsManager>(_gpsManager, "GpsConnectionChanged");
+                MessagingCenter.Send<IGpsManager>(_gpsManager, Constants.Message.GPS_STATE_CHANGED);
             }
         }
 
@@ -127,7 +132,7 @@ namespace TrickleToTide.Mobile.Droid.Services
         {
             Android.App.Application.Context.StartForegroundService<KeepAliveService>();
             IsRunning = true;
-            MessagingCenter.Send<ILocationUpdates>(this, "fg");
+            MessagingCenter.Send<ILocationUpdates>(this, Constants.Message.TRACKING_STATE_CHANGED);
             Log.Event("Start Tracking");
         }
 
@@ -136,7 +141,7 @@ namespace TrickleToTide.Mobile.Droid.Services
         {
             Android.App.Application.Context.StopService<KeepAliveService>();
             IsRunning = false;
-            MessagingCenter.Send<ILocationUpdates>(this, "fg");
+            MessagingCenter.Send<ILocationUpdates>(this, Constants.Message.TRACKING_STATE_CHANGED);
             Log.Event("Stop Tracking");
         }
 

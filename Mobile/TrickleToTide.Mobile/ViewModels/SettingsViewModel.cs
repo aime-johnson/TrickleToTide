@@ -22,12 +22,12 @@ namespace TrickleToTide.Mobile.ViewModels
         {
             _locationUpdates = DependencyService.Resolve<ILocationUpdates>();
 
-            MessagingCenter.Subscribe<IGpsManager>(this, "GpsConnectionChanged", (sender) => {
+            MessagingCenter.Subscribe<IGpsManager>(this, Constants.Message.GPS_STATE_CHANGED, (sender) => {
                 OnPropertyChanged("GpsConnected");
                 OnPropertyChanged("ConnectCommandDescription");
             });
 
-            MessagingCenter.Subscribe<App, Xamarin.Essentials.ConnectivityChangedEventArgs>(this, "ConnectionChanged", (sender, args) => {
+            MessagingCenter.Subscribe<App, Xamarin.Essentials.ConnectivityChangedEventArgs>(this, Constants.Message.CONNECTION_STATE_CHANGED, (sender, args) => {
                 OnPropertyChanged("ConnectionStatus");
             });
         }
