@@ -9,11 +9,22 @@
              Title="Main">
     <ContentPage.Content>
         <Grid>
+            <!--
+            HasZoomEnabled="False"
+            HasScrollEnabled="False"
+            IsShowingUser="True"
+            -->
             <maps:Map x:Name="map"
-                      HasZoomEnabled="False"
-                      HasScrollEnabled="False"
-                      IsShowingUser="True"
-                      />
+                      ItemsSource="{Binding Positions}">
+                <maps:Map.ItemTemplate>
+                    <DataTemplate>
+                        <maps:Pin Position="{Binding Position}"
+                                  Address="{Binding Address}"
+                                  Label="{Binding Description}"/>
+                    </DataTemplate>
+                </maps:Map.ItemTemplate>
+            </maps:Map>
+                      
             
             <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="End">
                 <Button x:Name="startButton" Margin="10" Padding="10" Text="Start" Command="{Binding StartCommand}"/>
