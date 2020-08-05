@@ -7,6 +7,11 @@
              mc:Ignorable="d"
              x:Class="TrickleToTide.Mobile.Views.MainPage"
              Title="Main">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text ="Start" Priority="0" Order="Primary" Command="{Binding StartCommand}"/>
+        <ToolbarItem Text ="Stop" Priority="1" Order="Primary" Command="{Binding StopCommand}"/>
+    </ContentPage.ToolbarItems>
+
     <ContentPage.Content>
         <Grid>
             <!--
@@ -24,12 +29,6 @@
                     </DataTemplate>
                 </maps:Map.ItemTemplate>
             </maps:Map>
-                      
-            
-            <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="End">
-                <Button x:Name="startButton" Margin="10" Padding="10" Text="Start" Command="{Binding StartCommand}"/>
-                <Button x:Name="stopButton" Margin="10" Padding="10" Text="Stop" Command="{Binding StopCommand}"/>
-            </StackLayout>
         </Grid>
     </ContentPage.Content>
 </ContentPage>
