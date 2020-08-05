@@ -30,13 +30,41 @@ namespace TrickleToTide.Api
             ILogger log)
         {
             var content = await new StreamReader(req.Body).ReadToEndAsync();
-            
-            log.LogInformation(content);
-            
             var source = JsonConvert.DeserializeObject<PositionUpdate>(content);
 
+            await UpdatePositionAsync(source);
+
+            var positions = await GetLatestPositionsAsync();
+            return new OkObjectResult(positions);
+        }
+
+
+        [FunctionName("ping")]
+        public async Task<IActionResult> Ping(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
+            ILogger log)
+        {
+            log.LogInformation("ping");
+
+            await Task.CompletedTask;
+            return new OkObjectResult($"Pong: {DateTime.UtcNow}");
+        }
+
+
+        [FunctionName("latest")]
+        public async Task<IActionResult> LatestPositions(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
+            ILogger log)
+        {
+            var positions = await GetLatestPositionsAsync();
+            return new OkObjectResult(positions);
+        }
+
+
+        private async Task UpdatePositionAsync(PositionUpdate source)
+        {
             var position = await _context.Positions.SingleOrDefaultAsync(p => p.Id == source.Id);
-            if(position == null)
+            if (position == null)
             {
                 position = new Position()
                 {
@@ -66,30 +94,14 @@ namespace TrickleToTide.Api
             });
 
             await _context.SaveChangesAsync();
-
-            return new OkResult();
         }
 
 
-        [FunctionName("ping")]
-        public async Task<IActionResult> Ping(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
-            ILogger log)
+        private async Task<PositionUpdate[]> GetLatestPositionsAsync()
         {
-            log.LogInformation("ping");
-
-            await Task.CompletedTask;
-            return new OkObjectResult($"Pong: {DateTime.UtcNow}");
-        }
-
-
-        [FunctionName("latest")]
-        public async Task<IActionResult> LatestPositions(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
-            ILogger log)
-        {
-            var positions = await _context.Positions.OrderByDescending(p=>p.Timestamp).ToArrayAsync();
-            return new OkObjectResult(positions.Select(p=>new PositionUpdate() { 
+            var positions = await _context.Positions.OrderByDescending(p => p.Timestamp).ToArrayAsync();
+            return positions.Select(p => new PositionUpdate()
+            {
                 Id = p.Id,
                 Timestamp = p.Timestamp,
                 Accuracy = p.Accuracy,
@@ -99,7 +111,7 @@ namespace TrickleToTide.Api
                 Longitude = p.Longitude,
                 Nickname = p.Nickname,
                 Speed = p.Speed
-            }));
+            }).ToArray();
         }
     }
 }
