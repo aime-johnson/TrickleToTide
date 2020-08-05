@@ -131,6 +131,7 @@ namespace TrickleToTide.Mobile.Droid.Services
         public void Start()
         {
             Android.App.Application.Context.StartForegroundService<KeepAliveService>();
+            Api.ResetThrottle();
             IsRunning = true;
             MessagingCenter.Send<ILocationUpdates>(this, Constants.Message.TRACKING_STATE_CHANGED);
             Log.Event("Start Tracking");

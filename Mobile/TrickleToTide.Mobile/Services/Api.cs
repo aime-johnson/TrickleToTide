@@ -59,5 +59,10 @@ namespace TrickleToTide.Mobile.Services
 
             return null;
         }
+
+        public static void ResetThrottle()
+        {
+            _lastUpdate = DateTime.MinValue;
+        }
     }
 }

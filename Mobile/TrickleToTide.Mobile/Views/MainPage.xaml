@@ -8,8 +8,8 @@
              x:Class="TrickleToTide.Mobile.Views.MainPage"
              Title="Main">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text ="Start" Priority="0" Order="Primary" Command="{Binding StartCommand}"/>
-        <ToolbarItem Text ="Stop" Priority="1" Order="Primary" Command="{Binding StopCommand}"/>
+        <ToolbarItem Text ="Start" Priority="0" Order="Primary" IconImageSource="play_circle" Command="{Binding StartCommand}"/>
+        <ToolbarItem Text ="Stop" Priority="1" Order="Primary" IconImageSource="stop_circle" Command="{Binding StopCommand}"/>
     </ContentPage.ToolbarItems>
 
     <ContentPage.Content>
@@ -29,6 +29,11 @@
                     </DataTemplate>
                 </maps:Map.ItemTemplate>
             </maps:Map>
+            
+            <!--<StackLayout Orientation="Horizontal" VerticalOptions="Start" HorizontalOptions="Center">
+                <ImageButton Source="play_circle" Command="{Binding StartCommand}"/>
+                <ImageButton Source="stop_circle" Command="{Binding StopCommand}"/>
+            </StackLayout>-->
         </Grid>
     </ContentPage.Content>
 </ContentPage>
