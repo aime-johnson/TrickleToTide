@@ -1,17 +1,16 @@
-### Mobile tracking app for Trickle to Tide fundraising event 2020
+﻿### Mobile tracking app for Trickle to Tide fundraising event 2020
 
 https://www.justgiving.com/fundraising/Trickle-to-Tide
-
 http://adventurelog.co.uk/ttt/
 
 
-(@todo: Links for below)
+### Built with
 
-- Xamarin Forms
-- Xamarin Essentials 
-- Shiny
-- Azure
-- GitHub Actions
+- <a href="https://github.com/xamarin/Xamarin.Forms" target="_blank">Xamarin Forms</a>
+- <a href="https://github.com/xamarin/Essentials" target="_blank">Xamarin Essentials</a>
+- <a href="https://github.com/shinyorg/shiny" target="_blank">Shiny</a>
+- <a href="https://azure.microsoft.com/" target="_blank">Azure</a>
+- <a href="https://github.com/features/actions" target="_blank">GitHub Actions</a>
 
 
 ### Android Setup
