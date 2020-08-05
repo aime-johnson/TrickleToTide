@@ -10,6 +10,7 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Shiny;
+using TrickleToTide.Mobile.Droid.Services;
 
 namespace TrickleToTide.Mobile.Droid
 {
@@ -23,11 +24,6 @@ namespace TrickleToTide.Mobile.Droid
         public MainApplication(IntPtr handle, JniHandleOwnership transer)
             : base(handle, transer)
         {
-        }
-
-        public override void OnCreate()
-        {
-            base.OnCreate();
         }
     }
 }

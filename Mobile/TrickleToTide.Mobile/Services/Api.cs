@@ -12,7 +12,7 @@ using Xamarin.Forms;
 
 namespace TrickleToTide.Mobile.Services
 {
-    static class Api
+    public static class Api
     {
         private static readonly HttpClient _client;
         private static readonly string _endpoint;
@@ -35,7 +35,7 @@ namespace TrickleToTide.Mobile.Services
             // Throttle updates
             if(_lastUpdate.AddSeconds(_throttleSeconds) < DateTime.Now)
             {
-                Log.Event("Update");
+                Log.Event($"Update ({position.Latitude:0.000}, {position.Longitude:0.000})");
                 try
                 {
                     var rs = await _client.PostAsync(

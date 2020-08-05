@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Events\**" />
+    <EmbeddedResource Remove="Events\**" />
+    <None Remove="Events\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Shiny.Core" Version="1.2.0.1755" />
     <PackageReference Include="Shiny.Locations" Version="1.2.0.1755" />
     <PackageReference Include="Shiny.Notifications" Version="1.2.0.1755" />
@@ -28,9 +34,5 @@
     <EmbeddedResource Update="Views\SettingsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Events\" />
   </ItemGroup>
 </Project>

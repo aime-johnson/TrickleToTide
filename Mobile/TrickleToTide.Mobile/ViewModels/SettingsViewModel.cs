@@ -16,53 +16,38 @@ namespace TrickleToTide.Mobile.ViewModels
 {
     class SettingsViewModel : BaseViewModel
     {
-        private readonly IGpsManager _gpsManager;
+        private readonly ILocationUpdates _locationUpdates;
 
         public SettingsViewModel()
         {
-            _gpsManager = ShinyHost.Resolve<IGpsManager>();
+            _locationUpdates = DependencyService.Resolve<ILocationUpdates>();
 
-            MessagingCenter.Subscribe<GpsDelegate, IGpsReading>(this, "OnReading", (sender, reading) =>
-            {
+            MessagingCenter.Subscribe<IGpsManager>(this, "GpsConnectionChanged", (sender) => {
+                OnPropertyChanged("GpsConnected");
+                OnPropertyChanged("ConnectCommandDescription");
             });
 
             MessagingCenter.Subscribe<App, Xamarin.Essentials.ConnectivityChangedEventArgs>(this, "ConnectionChanged", (sender, args) => {
-                try
-                {
-                    OnPropertyChanged("ConnectionStatus");
-                }
-                catch
-                {
-                    // noop
-                }
+                OnPropertyChanged("ConnectionStatus");
             });
         }
 
-        public bool GpsConnected => _gpsManager.IsListening;
+        public bool GpsConnected => _locationUpdates.IsGpsConnected;
         private Command _connectCommand;
         public Command ConnectCommand => _connectCommand ?? (_connectCommand = new Command(Connect));
-        private async void Connect()
+        private void Connect()
         {
-            if (_gpsManager.IsListening)
+            if (_locationUpdates.IsGpsConnected)
             {
-                await _gpsManager.StopListener();
+                _locationUpdates.StopGps();
             }
             else
             {
-                await _gpsManager.RequestAccessAndStart(new GpsRequest()
-                {
-                    Interval = TimeSpan.FromSeconds(10),
-                    Priority = GpsPriority.Highest,
-                    UseBackground = true
-                });
+                _locationUpdates.StartGps();
             }
-
-            MessagingCenter.Send<IGpsManager>(_gpsManager, "GpsConnectionChanged");
-            OnPropertyChanged("GpsConnected");
-            OnPropertyChanged("ConnectCommandDescription");
         }
 
-        public string ConnectCommandDescription => _gpsManager.IsListening ? "Disconnect GPS" : "Connect GPS";
+        public string ConnectCommandDescription => _locationUpdates.IsGpsConnected ? "Disconnect GPS" : "Connect GPS";
 
         public string ConnectionStatus => Xamarin.Essentials.Connectivity.NetworkAccess.ToString() + " / " + string.Join(", ",Xamarin.Essentials.Connectivity.ConnectionProfiles.Select(x=>x.ToString()));
 
