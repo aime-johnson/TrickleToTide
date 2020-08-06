@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TrickleToTide.Common;
 using TrickleToTide.Mobile.Delegates;
+using TrickleToTide.Mobile.Services;
 using TrickleToTide.Mobile.ViewModels;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -23,9 +24,15 @@ namespace TrickleToTide.Mobile.Views
 
             BindingContext = new MainViewModel();
 
-            var lat = Preferences.Get(Constants.Preferences.LAST_LATITUDE, 51.489271);
-            var lon = Preferences.Get(Constants.Preferences.LAST_LONGITUDE, -0.235422);
-            map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(lat, lon), new Distance(100)));
+            var lastKnownPosition = State.LastKnownPosition;
+            if(lastKnownPosition != null)
+            {
+                map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(lastKnownPosition.Latitude, lastKnownPosition.Longitude), new Distance(100)));
+            }
+            else
+            {
+                map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(Constants.Default.LATITUDE, Constants.Default.LONGITUDE), new Distance(1000)));
+            }
 
             MessagingCenter.Subscribe<PositionUpdate[]>(this, Constants.Message.POSITIONS_UPDATED, (positions) =>
             {

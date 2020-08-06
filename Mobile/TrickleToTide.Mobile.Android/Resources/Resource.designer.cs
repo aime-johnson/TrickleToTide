@@ -11909,13 +11909,13 @@ namespace TrickleToTide.Mobile.Droid
 			public const int notify_panel_notification_icon_bg = 2131165321;
 			
 			// aapt resource value: 0x7F07008A
-			public const int play_circle = 2131165322;
+			public const int splash = 2131165322;
 			
 			// aapt resource value: 0x7F07008B
-			public const int splash = 2131165323;
+			public const int start_icon = 2131165323;
 			
 			// aapt resource value: 0x7F07008C
-			public const int stop_circle = 2131165324;
+			public const int stop_icon = 2131165324;
 			
 			// aapt resource value: 0x7F07008D
 			public const int tab_about = 2131165325;

@@ -9,8 +9,6 @@
              x:Class="TrickleToTide.Mobile.Views.MainPage"
              Title="Main">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text ="Start" Priority="0" Order="Primary" IconImageSource="play_circle" Command="{Binding StartCommand}"/>
-        <ToolbarItem Text ="Stop" Priority="1" Order="Primary" IconImageSource="stop_circle" Command="{Binding StopCommand}"/>
     </ContentPage.ToolbarItems>
 
     <ContentPage.Content>
@@ -20,7 +18,7 @@
             HasScrollEnabled="False"
             IsShowingUser="True"
             -->
-            <!--<maps:Map x:Name="map"
+            <maps:Map x:Name="map"
                       ItemsSource="{Binding Positions}">
                 <maps:Map.ItemTemplate>
                     <DataTemplate>
@@ -29,9 +27,9 @@
                                   Label="{Binding Description}"/>
                     </DataTemplate>
                 </maps:Map.ItemTemplate>
-            </maps:Map>-->
+            </maps:Map>
 
-            <ctl:CustomMap x:Name="map" ItemsSource="{Binding Positions}">
+            <!--<ctl:CustomMap x:Name="map" ItemsSource="{Binding Positions}">
                 <ctl:CustomMap.ItemTemplate>
                     <DataTemplate>
                         <maps:Pin Position="{Binding Position}"
@@ -39,12 +37,12 @@
                                   Label="{Binding Description}"/>
                     </DataTemplate>
                 </ctl:CustomMap.ItemTemplate>
-            </ctl:CustomMap>
+            </ctl:CustomMap>-->
             
-            <!--<StackLayout Orientation="Horizontal" VerticalOptions="Start" HorizontalOptions="Center">
-                <ImageButton Source="play_circle" Command="{Binding StartCommand}"/>
-                <ImageButton Source="stop_circle" Command="{Binding StopCommand}"/>
-            </StackLayout>-->
+            <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="Start" Margin="20">
+                <ImageButton WidthRequest="64" IsVisible="{Binding CanStart}" BackgroundColor="Transparent" Source="start_icon" Command="{Binding StartCommand}"/>
+                <ImageButton WidthRequest="64" IsVisible="{Binding CanStop}" BackgroundColor="Transparent" Source="stop_icon" Command="{Binding StopCommand}"/>
+            </StackLayout>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

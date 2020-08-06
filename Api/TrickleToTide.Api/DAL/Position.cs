@@ -18,6 +18,7 @@ namespace TrickleToTide.Api.DAL
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public double Altitude { get; set; }
+        public string Category { get; set; }
         public string Nickname { get; set; }
         public double Accuracy { get; set; }
         public double Heading { get; set; }

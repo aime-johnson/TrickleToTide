@@ -75,6 +75,7 @@ namespace TrickleToTide.Api
                 _context.Positions.Add(position);
             }
 
+            position.Category = source.Category;
             position.Nickname = source.Nickname;
             position.Latitude = source.Latitude;
             position.Longitude = source.Longitude;
