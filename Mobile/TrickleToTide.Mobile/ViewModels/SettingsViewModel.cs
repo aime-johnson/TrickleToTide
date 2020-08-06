@@ -96,18 +96,23 @@ namespace TrickleToTide.Mobile.ViewModels
                 {
                     foreach (var category in State.Positions.GroupBy(x => x.Category).OrderBy(x => x.Key))
                     {
-                        s.AppendLine($"<h3>{category.Key ?? "no-cat"}</h3>");
+                        if (!string.IsNullOrEmpty(category.Key))
+                        {
+                            s.AppendLine($"<h4>{category.Key}</h4>");
+                        }
+
                         foreach (var pos in category.OrderBy(x => x.Nickname??""))
                         {
                             s.AppendLine("<div>");
                             s.AppendLine($"<span>{pos.Timestamp:HH:mm:ss}</span>");
-                            s.AppendLine($"<strong> {(string.IsNullOrEmpty(pos.Nickname) ? "Anon" : pos.Nickname)}</strong>");
+                            s.AppendLine($"<strong> {pos.Nickname}</strong>");
                             if(pos.Timestamp.Date != DateTime.Now.Date)
                             {
                                 s.AppendLine($"<span> ({pos.Timestamp.ToShortDateString()})</span>");
                             }
                             s.AppendLine("</div>");
                         }
+                        s.AppendLine("<br/>");
                     }
                 }
                 else

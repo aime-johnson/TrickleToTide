@@ -68,7 +68,7 @@ namespace TrickleToTide.Mobile.Services
                             {
                                 Id = pos.Id,
                                 Category = pos.Category,
-                                Nickname = pos.Nickname ?? "no-name",
+                                Nickname = pos.Nickname ?? "Anon",
                                 Timestamp = pos.Timestamp,
                                 Position = new Xamarin.Forms.Maps.Position(pos.Latitude, pos.Longitude)
                             };
@@ -78,7 +78,7 @@ namespace TrickleToTide.Mobile.Services
 
                         p.Timestamp = pos.Timestamp;
                         p.Category = pos.Category;
-                        p.Nickname = pos.Nickname ?? "no-name";
+                        p.Nickname = pos.Nickname ?? "Anon";
                         p.Position = new Xamarin.Forms.Maps.Position(pos.Latitude, pos.Longitude);
                     }
 
