@@ -20,8 +20,8 @@
                 <maps:Map.ItemTemplate>
                     <DataTemplate>
                         <maps:Pin Position="{Binding Position}"
-                                  Address="{Binding Address}"
-                                  Label="{Binding Description}"/>
+                                  Address="{Binding Category}"
+                                  Label="{Binding Nickname}"/>
                     </DataTemplate>
                 </maps:Map.ItemTemplate>
             </maps:Map>

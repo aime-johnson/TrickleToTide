@@ -5,11 +5,71 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              x:Class="TrickleToTide.Mobile.Views.SettingsPage"
+             BackgroundColor="#F0F0F0"
              Title="Settings">
+    <ContentPage.Resources>
+        <Style TargetType="Frame">
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="HasShadow" Value="True"/>
+        </Style>
+
+        <Style TargetType="Label" x:Key="label">
+            <Setter Property="VerticalOptions" Value="Center"/>
+            <Setter Property="FontAttributes" Value="Bold"/>
+        </Style>
+    </ContentPage.Resources>
     <ContentPage.Content>
-        <TableView Intent="Settings" VerticalOptions="Start">
+        <ScrollView>
+            <StackLayout Orientation="Vertical">
+                <Frame>
+                    <Grid BackgroundColor="White">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Grid.Row="0" Text="Category" Style="{StaticResource label}"/>
+                        <Picker Grid.Column="1" Grid.Row="0" ItemsSource="{Binding Categories}" SelectedItem="{Binding Category}"/>
+
+                        <Label Grid.Column="0" Grid.Row="1" Text="Nickname" Style="{StaticResource label}"/>
+                        <Entry Grid.Column="1" Grid.Row="1" Text="{Binding Nickname}" ClearButtonVisibility="WhileEditing"/>
+                    </Grid>
+                </Frame>
+                
+                <Frame>
+                    <Grid BackgroundColor="White">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Column="0" Grid.Row="0" Text="GPS" Style="{StaticResource label}"/>
+                        <Switch Grid.Column="1" Grid.Row="0" IsToggled="{Binding GpsConnected}" HorizontalOptions="Start"/>
+
+                        <Label Grid.Column="0" Grid.Row="1" Text="Network" Style="{StaticResource label}"/>
+                        <Label Grid.Column="1" Grid.Row="1" Text="{Binding ConnectionStatus}" FontAttributes="Bold"/>
+                        
+                        <Label Grid.Column="0" Grid.Row="2" Text="Last Update" Style="{StaticResource label}"/>
+                        <Label Grid.Column="1" Grid.Row="2" Text="{Binding LastUpdate}" FontAttributes="Bold"/>
+                    </Grid>
+                </Frame>
+                
+                <Frame>
+                    <Grid BackgroundColor="White">
+                        <Label Text="{Binding PositionsSummary}" TextType="Html"/>
+                    </Grid>
+                </Frame>
+            </StackLayout>
+        </ScrollView>
+        
+        <!--<TableView Intent="Settings" VerticalOptions="Start">
             <TableSection Title="User Prefs">
                 <EntryCell Label="Name" Text="{Binding Nickname}" />
+                <ViewCell>
+                    <Grid>
+                        <Picker ItemsSource="{Binding Categories}" SelectedItem="{Binding Category}"/>
+                    </Grid>
+                </ViewCell>
             </TableSection>
 
             <TableSection Title="Connections">
@@ -37,8 +97,7 @@
                     <Button Text="{Binding ConnectCommandDescription}" Command="{Binding ConnectCommand}"/>
                 </ViewCell>
             </TableSection>
-
-
-        </TableView>
+        </TableView>-->
+        
     </ContentPage.Content>
 </ContentPage>

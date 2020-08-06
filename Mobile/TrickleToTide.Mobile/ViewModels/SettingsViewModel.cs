@@ -30,26 +30,35 @@ namespace TrickleToTide.Mobile.ViewModels
             MessagingCenter.Subscribe<App, Xamarin.Essentials.ConnectivityChangedEventArgs>(this, Constants.Message.CONNECTION_STATE_CHANGED, (sender, args) => {
                 OnPropertyChanged("ConnectionStatus");
             });
+
+            MessagingCenter.Subscribe<PositionUpdate[]>(this, Constants.Message.POSITIONS_UPDATED, (positions) =>
+            {
+                OnPropertyChanged("PositionsSummary");
+                OnPropertyChanged("LastUpdate");
+            });
         }
 
-        public bool GpsConnected => _locationUpdates.IsGpsConnected;
-        private Command _connectCommand;
-        public Command ConnectCommand => _connectCommand ?? (_connectCommand = new Command(Connect));
-        private void Connect()
+        public bool GpsConnected
         {
-            if (_locationUpdates.IsGpsConnected)
+            get { return _locationUpdates.IsGpsConnected; }
+            set
             {
-                _locationUpdates.StopGps();
-            }
-            else
-            {
-                _locationUpdates.StartGps();
+                if(value != _locationUpdates.IsGpsConnected)
+                {
+                    if (value)
+                    {
+                        _locationUpdates.StartGps();
+                    }
+                    else
+                    {
+                        _locationUpdates.StopGps();
+                    }
+                }
             }
         }
 
-        public string ConnectCommandDescription => _locationUpdates.IsGpsConnected ? "Disconnect GPS" : "Connect GPS";
 
-        public string ConnectionStatus => Xamarin.Essentials.Connectivity.NetworkAccess.ToString() + " / " + string.Join(", ",Xamarin.Essentials.Connectivity.ConnectionProfiles.Select(x=>x.ToString()));
+        public string ConnectionStatus => Connectivity.NetworkAccess.ToString() + " / " + string.Join(", ", Connectivity.ConnectionProfiles.Select(x=>x.ToString()));
 
         public string Nickname
         {
@@ -58,6 +67,54 @@ namespace TrickleToTide.Mobile.ViewModels
             { 
                 Preferences.Set(Constants.Preferences.NICKNAME, value);
                 OnPropertyChanged();
+            }
+        }
+
+
+        public string[] Categories => Constants.Default.CATEGORIES;
+        public string Category
+        {
+            get
+            {
+                return State.Category;
+            }
+            set
+            {
+                State.Category = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public DateTime LastUpdate => State.LastUpdate;
+
+        public string PositionsSummary
+        {
+            get
+            {
+                var s = new StringBuilder();
+                if (State.Positions.Any())
+                {
+                    foreach (var category in State.Positions.GroupBy(x => x.Category).OrderBy(x => x.Key))
+                    {
+                        s.AppendLine($"<h3>{category.Key ?? "no-cat"}</h3>");
+                        foreach (var pos in category.OrderBy(x => x.Nickname??""))
+                        {
+                            s.AppendLine("<div>");
+                            s.AppendLine($"<span>{pos.Timestamp:HH:mm:ss}</span>");
+                            s.AppendLine($"<strong> {(string.IsNullOrEmpty(pos.Nickname) ? "Anon" : pos.Nickname)}</strong>");
+                            if(pos.Timestamp.Date != DateTime.Now.Date)
+                            {
+                                s.AppendLine($"<span> ({pos.Timestamp.ToShortDateString()})</span>");
+                            }
+                            s.AppendLine("</div>");
+                        }
+                    }
+                }
+                else
+                {
+                    s.AppendLine("Waiting for position updates.");
+                }
+                return s.ToString();
             }
         }
     }

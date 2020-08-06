@@ -25,7 +25,7 @@ namespace TrickleToTide.Mobile.Services
 
         public static ObservableCollection<PositionViewModel> Positions { get; } = new ObservableCollection<PositionViewModel>();
 
-        private static DateTime _lastUpdate = DateTime.MinValue;
+        public static DateTime LastUpdate { get; private set; } = DateTime.MinValue;
 
         static State()
         {
@@ -40,7 +40,7 @@ namespace TrickleToTide.Mobile.Services
         public async static Task<PositionUpdate[]> UpdatePositionAsync(PositionUpdate position)
         {
             // Throttle updates
-            if (_lastUpdate.AddSeconds(_throttleSeconds) < DateTime.Now)
+            if (LastUpdate.AddSeconds(_throttleSeconds) < DateTime.Now)
             {
                 Log.Event($"Update ({position.Latitude:0.000}, {position.Longitude:0.000})");
                 try
@@ -53,7 +53,7 @@ namespace TrickleToTide.Mobile.Services
                             "application/json"));
 
                     rs.EnsureSuccessStatusCode();
-                    _lastUpdate = DateTime.Now;
+                    LastUpdate = DateTime.Now;
 
                     var json = await rs.Content.ReadAsStringAsync();
                     var source = JsonConvert.DeserializeObject<PositionUpdate[]>(json);
@@ -67,16 +67,18 @@ namespace TrickleToTide.Mobile.Services
                             p = new PositionViewModel()
                             {
                                 Id = pos.Id,
-                                Address = "address",
-                                Description = pos.Nickname ?? "no-name",
+                                Category = pos.Category,
+                                Nickname = pos.Nickname ?? "no-name",
+                                Timestamp = pos.Timestamp,
                                 Position = new Xamarin.Forms.Maps.Position(pos.Latitude, pos.Longitude)
                             };
 
                             Positions.Add(p);
                         }
 
-                        p.Address = "address";
-                        p.Description = pos.Nickname ?? "no-name";
+                        p.Timestamp = pos.Timestamp;
+                        p.Category = pos.Category;
+                        p.Nickname = pos.Nickname ?? "no-name";
                         p.Position = new Xamarin.Forms.Maps.Position(pos.Latitude, pos.Longitude);
                     }
 
@@ -104,7 +106,7 @@ namespace TrickleToTide.Mobile.Services
 
         public static void ResetThrottle()
         {
-            _lastUpdate = DateTime.MinValue;
+            LastUpdate = DateTime.MinValue;
         }
 
         public static Position LastKnownPosition
@@ -126,7 +128,7 @@ namespace TrickleToTide.Mobile.Services
         {
             get
             {
-                return Preferences.Get(Constants.Preferences.CATEGORY, "");
+                return Preferences.Get(Constants.Preferences.CATEGORY, Constants.Default.CATEGORY);
             }
             set
             {
@@ -147,6 +149,7 @@ namespace TrickleToTide.Mobile.Services
             }
         }
 
+        public static bool IsDev => Category == "Dev";
 
         public static Guid Id
         {

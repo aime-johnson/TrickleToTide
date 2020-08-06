@@ -10,6 +10,12 @@ namespace TrickleToTide.Mobile
         {
             public const double LATITUDE = 51.6875751;
             public const double LONGITUDE = -2.0222528;
+            public const string CATEGORY = "Splashy Boi";
+            public static readonly string[] CATEGORIES = new[] { 
+                CATEGORY,
+                "Support",
+                "Dev"
+            };
         }
 
 

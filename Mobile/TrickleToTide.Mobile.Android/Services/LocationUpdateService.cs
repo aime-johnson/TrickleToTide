@@ -89,6 +89,7 @@ namespace TrickleToTide.Mobile.Droid.Services
                 {
                     _gpsAvailable = true;
                     Log.Event($"GPS Connected");
+                    State.ResetThrottle();
                     MessagingCenter.Send<IGpsManager>(_gpsManager, Constants.Message.GPS_STATE_CHANGED);
                 }
             }

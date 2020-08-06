@@ -112,6 +112,7 @@ namespace TrickleToTide.Api
                 Heading = p.Heading,
                 Latitude = p.Latitude,
                 Longitude = p.Longitude,
+                Category = p.Category,
                 Nickname = p.Nickname,
                 Speed = p.Speed
             }).ToArray();

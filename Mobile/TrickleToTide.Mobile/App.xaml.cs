@@ -53,6 +53,7 @@ namespace TrickleToTide.Mobile
         protected override void OnResume()
         {
             Log.Event("Resume");
+            State.ResetThrottle();
         }
     }
 }

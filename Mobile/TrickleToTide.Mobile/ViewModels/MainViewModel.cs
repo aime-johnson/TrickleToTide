@@ -47,7 +47,6 @@ namespace TrickleToTide.Mobile.ViewModels
         public bool CanStart => !_updates.IsRunning && _updates.IsGpsConnected;
         public bool CanStop => _updates.IsRunning && _updates.IsGpsConnected;
 
-
         private void UpdateStartStopAvailablilty()
         {
             OnPropertyChanged("CanStart");
@@ -61,9 +60,10 @@ namespace TrickleToTide.Mobile.ViewModels
     public class PositionViewModel : BaseViewModel
     {
         public Guid Id { get; set; }
-        public string Address { get; set; }
-        public string Description { get; set; }
-    
+        public string Category { get; set; }
+        public string Nickname { get; set; }
+        public DateTime Timestamp { get; set; }
+
         private Xamarin.Forms.Maps.Position _position;
         public Xamarin.Forms.Maps.Position Position
         {
