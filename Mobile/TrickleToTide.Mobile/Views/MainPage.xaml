@@ -7,7 +7,7 @@
              xmlns:ctl="clr-namespace:TrickleToTide.Mobile.Controls"
              mc:Ignorable="d"
              x:Class="TrickleToTide.Mobile.Views.MainPage"
-             Title="Trickle to Tide">
+             Title="{Binding Title}">
     <ContentPage.Content>
         <Grid>
             <!--
@@ -16,6 +16,8 @@
             IsShowingUser="True"
             -->
             <maps:Map x:Name="map"
+                      HasZoomEnabled="False"
+                      HasScrollEnabled="False"
                       ItemsSource="{Binding Positions}">
                 <maps:Map.ItemTemplate>
                     <DataTemplate>
@@ -30,15 +32,17 @@
                 <ctl:CustomMap.ItemTemplate>
                     <DataTemplate>
                         <maps:Pin Position="{Binding Position}"
-                                  Address="{Binding Address}"
-                                  Label="{Binding Description}"/>
+                                  Address="{Binding Category}"
+                                  Label="{Binding Nickname}"/>
                     </DataTemplate>
                 </ctl:CustomMap.ItemTemplate>
             </ctl:CustomMap>-->
             
             <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="Start" Margin="20">
-                <ImageButton WidthRequest="64" IsVisible="{Binding CanStart}" BackgroundColor="Transparent" Source="start_icon" Command="{Binding StartCommand}"/>
-                <ImageButton WidthRequest="64" IsVisible="{Binding CanStop}" BackgroundColor="Transparent" Source="stop_icon" Command="{Binding StopCommand}"/>
+                <ImageButton WidthRequest="50" IsVisible="{Binding CanStart}" BackgroundColor="Transparent" Source="start_icon" Command="{Binding StartCommand}"/>
+                <ImageButton WidthRequest="50" IsVisible="{Binding CanStop}" BackgroundColor="Transparent" Source="stop_icon" Command="{Binding StopCommand}"/>
+
+                <ImageButton WidthRequest="60" IsVisible="{Binding CanStop}" BackgroundColor="Transparent" Source="locate_icon" Command="{Binding SetTargetCommand}"/>
             </StackLayout>
         </Grid>
     </ContentPage.Content>

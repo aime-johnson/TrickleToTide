@@ -53,11 +53,6 @@ namespace TrickleToTide.Mobile.Droid.Services
                             Speed = reading.Speed,
                             Timestamp = reading.Timestamp
                         });
-
-                        if(positions != null)
-                        {
-                            MessagingCenter.Send<PositionUpdate[]>(positions, Constants.Message.POSITIONS_UPDATED);
-                        }
                     }
                     catch (Exception ex)
                     {
@@ -173,8 +168,8 @@ namespace TrickleToTide.Mobile.Droid.Services
             // Building channel if API verion is 26 or above
             if (global::Android.OS.Build.VERSION.SdkInt >= BuildVersionCodes.O)
             {
-                NotificationChannel notificationChannel = new NotificationChannel(foregroundChannelId, "Title", NotificationImportance.High);
-                notificationChannel.Importance = NotificationImportance.High;
+                NotificationChannel notificationChannel = new NotificationChannel(foregroundChannelId, "Title", NotificationImportance.None);
+                notificationChannel.Importance = NotificationImportance.None;
                 //notificationChannel.EnableLights(true);
                 //notificationChannel.EnableVibration(true);
                 notificationChannel.SetShowBadge(true);

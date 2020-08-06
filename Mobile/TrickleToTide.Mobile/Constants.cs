@@ -8,8 +8,14 @@ namespace TrickleToTide.Mobile
     {
         public static class Default
         {
-            public const double LATITUDE = 51.6875751;
-            public const double LONGITUDE = -2.0222528;
+            // Rough centre point of journey
+            public const double LATITUDE = 51.7286719;
+            public const double LONGITUDE = -0.7616872;
+
+            // Start of the trickle...
+            //public const double LATITUDE = 51.6875751;
+            //public const double LONGITUDE = -2.0222528;
+
             public const string CATEGORY = "Splashy Boi";
             public static readonly string[] CATEGORIES = new[] { 
                 CATEGORY,
@@ -29,7 +35,12 @@ namespace TrickleToTide.Mobile
             /// Positions of other trackers updated
             /// </summary>
             public const string POSITIONS_UPDATED = "positions-updated";
-            
+
+            /// <summary>
+            /// User has selected a different target to track
+            /// </summary>
+            public const string TARGET_UPDATED = "target-updated";
+
             /// <summary>
             /// Device GPS location has changed
             /// </summary>
@@ -46,6 +57,7 @@ namespace TrickleToTide.Mobile
             public const string LAST_LATITUDE = "ttt-lat";
             public const string LAST_LONGITUDE = "ttt-lon";
             public const string ID = "ttt-id";
+            public const string LOCATE_OPTION = "ttt-locate-option";
         }
     }
 }

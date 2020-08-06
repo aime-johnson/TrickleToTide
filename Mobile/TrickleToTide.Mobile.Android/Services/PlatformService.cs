@@ -9,6 +9,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Xamarin.Essentials;
 
 namespace TrickleToTide.Mobile.Droid.Services
 {
@@ -32,5 +33,12 @@ namespace TrickleToTide.Mobile.Droid.Services
                 }
             }
         }
-   }
+
+        public void Toast(string message, bool quick = true)
+        {
+            MainThread.BeginInvokeOnMainThread(() => {
+                Android.Widget.Toast.MakeText(Application.Context, message, quick ? ToastLength.Short : ToastLength.Long).Show();
+            });            
+        }
+    }
 }

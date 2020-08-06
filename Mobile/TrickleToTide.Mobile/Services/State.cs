@@ -16,12 +16,22 @@ using Xamarin.Forms;
 
 namespace TrickleToTide.Mobile.Services
 {
+    public enum TargetOption
+    {
+        Self,
+        All
+    }
+
     public static class State
     {
         private static Guid _id;
         private static readonly HttpClient _client;
-        private static readonly string _endpoint;
+        private static readonly IPlatform _platform;
         private static readonly int _throttleSeconds = 60;
+        private static readonly TargetOption[] _targetOptions = new[] { 
+            TargetOption.All,
+            TargetOption.Self
+        };
 
         public static ObservableCollection<PositionViewModel> Positions { get; } = new ObservableCollection<PositionViewModel>();
 
@@ -32,7 +42,7 @@ namespace TrickleToTide.Mobile.Services
             _client = new HttpClient();
             _client.DefaultRequestHeaders.Add("x-functions-key", DependencyService.Resolve<IPlatform>().ApiKey);
             _client.Timeout = TimeSpan.FromSeconds(120);
-            _endpoint = DependencyService.Resolve<IPlatform>().ApiEndpoint;
+            _platform = DependencyService.Resolve<IPlatform>();
             _id = Guid.Parse(Preferences.Get(Constants.Preferences.ID, Guid.Empty.ToString()));
         }
 
@@ -46,7 +56,7 @@ namespace TrickleToTide.Mobile.Services
                 try
                 {
                     var rs = await _client.PostAsync(
-                        _endpoint + "/api/update",
+                        _platform.ApiEndpoint + "/api/update",
                         new StringContent(
                             JsonConvert.SerializeObject(position),
                             Encoding.UTF8,
@@ -92,6 +102,8 @@ namespace TrickleToTide.Mobile.Services
                         }
                     }
 
+                    MessagingCenter.Send<PositionUpdate[]>(source, Constants.Message.POSITIONS_UPDATED);
+
                     return source;
                 }
                 catch (Exception ex)
@@ -115,7 +127,7 @@ namespace TrickleToTide.Mobile.Services
             {
                 var lat = Preferences.Get(Constants.Preferences.LAST_LATITUDE, 0.0);
                 var lon = Preferences.Get(Constants.Preferences.LAST_LONGITUDE, 0.0);
-                return lat == 0.0 && lon == 0.0 ? null : new Position(lat, lon);
+                return lat == 0.0 && lon == 0.0 ? new Position(Constants.Default.LATITUDE, Constants.Default.LONGITUDE) : new Position(lat, lon);
             }
             set
             {
@@ -128,11 +140,23 @@ namespace TrickleToTide.Mobile.Services
         {
             get
             {
-                return Preferences.Get(Constants.Preferences.CATEGORY, Constants.Default.CATEGORY);
+                // Reset user category if not recognised.
+                var x = Preferences.Get(Constants.Preferences.CATEGORY, Constants.Default.CATEGORY);
+                if (!Constants.Default.CATEGORIES.Contains(x))
+                {
+                    x = Constants.Default.CATEGORY;
+                    Category = x;
+                }
+                return x;
             }
             set
             {
-                Preferences.Set(Constants.Preferences.CATEGORY, value);
+                if(value != Category)
+                {
+                    Preferences.Set(Constants.Preferences.CATEGORY, value);
+                    MessagingCenter.Send<string>(SelectedTarget.ToString(), Constants.Message.TARGET_UPDATED);
+                    Log.Event("Category changed: " + value);
+                }
             }
         }
 
@@ -149,7 +173,35 @@ namespace TrickleToTide.Mobile.Services
             }
         }
 
-        public static bool IsDev => Category == "Dev";
+
+        public static TargetOption SelectedTarget
+        {
+            get
+            {
+                return (TargetOption)Enum.Parse(typeof(TargetOption), Preferences.Get(Constants.Preferences.LOCATE_OPTION, TargetOption.All.ToString()));
+            }
+            set
+            {
+                if(value != SelectedTarget)
+                {
+                    Preferences.Set(Constants.Preferences.LOCATE_OPTION, value.ToString());
+                    MessagingCenter.Send<string>(value.ToString(), Constants.Message.TARGET_UPDATED);
+                    _platform.Toast("Following " + SelectedTarget.ToString());
+                    Log.Event("Following " + SelectedTarget.ToString());
+                }
+            }
+        }
+
+        public static void CycleTarget()
+        {
+            var i = Array.IndexOf(_targetOptions, SelectedTarget);
+            if(i == _targetOptions.Count()-1)
+            {
+                i = -1;
+            }
+            SelectedTarget = _targetOptions[i + 1];
+        }
+
 
         public static Guid Id
         {

@@ -164,5 +164,8 @@
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\format_align_justify.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\locate_icon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

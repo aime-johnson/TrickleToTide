@@ -16,5 +16,6 @@ namespace TrickleToTide.Mobile.Interfaces
         string ApiKey { get; }
         string ApiEndpoint { get; }
         string LogDirectory { get; }
+        void Toast(string message, bool quick = true);
     }
 }

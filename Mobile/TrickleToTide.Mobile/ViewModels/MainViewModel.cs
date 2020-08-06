@@ -3,6 +3,7 @@ using Shiny.Locations;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TrickleToTide.Common;
 using TrickleToTide.Mobile.Interfaces;
@@ -22,6 +23,7 @@ namespace TrickleToTide.Mobile.ViewModels
 
             MessagingCenter.Subscribe<ILocationUpdates>(this, Constants.Message.TRACKING_STATE_CHANGED, (sender) => {
                 UpdateStartStopAvailablilty();
+                OnPropertyChanged("Title");
             });
 
 
@@ -32,10 +34,17 @@ namespace TrickleToTide.Mobile.ViewModels
                     _updates.Stop();
                 }
                 UpdateStartStopAvailablilty();
+                OnPropertyChanged("Title");
+            });
+
+
+            MessagingCenter.Subscribe<string>(this, Constants.Message.TARGET_UPDATED, (target) => {
+                OnPropertyChanged("Title");
             });
         }
 
         public ObservableCollection<PositionViewModel> Positions => State.Positions;
+        public string Title => "Trickle to Tide" + (_updates.IsRunning ? $" (Following {State.SelectedTarget})" :"" );
 
 
         private Command _startCommand;
@@ -47,12 +56,22 @@ namespace TrickleToTide.Mobile.ViewModels
         public bool CanStart => !_updates.IsRunning && _updates.IsGpsConnected;
         public bool CanStop => _updates.IsRunning && _updates.IsGpsConnected;
 
+        private Command _setTargetCommand;
+        public Command SetTargetCommand => _setTargetCommand ?? (_setTargetCommand = new Command(_ => SetTarget(), _ => CanStop));
+
+
+        private void SetTarget()
+        {
+            State.CycleTarget();
+        }
+
         private void UpdateStartStopAvailablilty()
         {
             OnPropertyChanged("CanStart");
             OnPropertyChanged("CanStop");
             StartCommand.ChangeCanExecute();
             StopCommand.ChangeCanExecute();
+            SetTargetCommand.ChangeCanExecute();
         }
     }
 

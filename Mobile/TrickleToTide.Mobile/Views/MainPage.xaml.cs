@@ -24,32 +24,65 @@ namespace TrickleToTide.Mobile.Views
 
             BindingContext = new MainViewModel();
 
-            var lastKnownPosition = State.LastKnownPosition;
-            if(lastKnownPosition != null)
-            {
-                map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(lastKnownPosition.Latitude, lastKnownPosition.Longitude), new Distance(100)));
-            }
-            else
-            {
-                map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(Constants.Default.LATITUDE, Constants.Default.LONGITUDE), new Distance(1000)));
-            }
 
             MessagingCenter.Subscribe<PositionUpdate[]>(this, Constants.Message.POSITIONS_UPDATED, (positions) =>
             {
-                if (positions.Any())
-                {
-                    var maxLat = positions.Max(p => p.Latitude);
-                    var minLat = positions.Min(p => p.Latitude);
-                    var maxLon = positions.Max(p => p.Longitude);
-                    var minLon = positions.Min(p => p.Longitude);
-
-                    var centreLat = (minLat + maxLat) / 2;
-                    var centreLon = (minLon + maxLon) / 2;
-                    var distance = GeoCode.CalcDistance(minLat, minLon, maxLat, maxLon, GeoCodeCalcMeasurement.Kilometers);
-
-                    map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(centreLat, centreLon), Distance.FromKilometers(distance)));
-                }
+                CentreAndZoom();
             });
+
+
+            MessagingCenter.Subscribe<string>(this, Constants.Message.TARGET_UPDATED, (target) => {
+                CentreAndZoom();
+            });
+
+        }
+
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            CentreAndZoom();
+        }
+
+
+        private void CentreAndZoom()
+        {
+            var source = State.Positions.AsEnumerable();
+
+            switch (State.SelectedTarget)
+            {
+                case TargetOption.All:
+                    if(State.Category != "Dev")
+                    {
+                        // Filter out Dev entities unless we're a Dev ourself
+                        source = source.Where(x => x.Category != "Dev");
+                    }
+                    break;
+
+                case TargetOption.Self:
+                    source = source.Where(x => x.Id == State.Id);
+                    break;
+            }
+
+            if (source.Any())
+            {
+                var maxLat = source.Max(p => p.Position.Latitude);
+                var minLat = source.Min(p => p.Position.Latitude);
+                var maxLon = source.Max(p => p.Position.Longitude);
+                var minLon = source.Min(p => p.Position.Longitude);
+
+                var centreLat = (minLat + maxLat) / 2;
+                var centreLon = (minLon + maxLon) / 2;
+                var distance = GeoCode.CalcDistance(minLat, minLon, maxLat, maxLon, GeoCodeCalcMeasurement.Kilometers);
+                distance = distance < 0.5 ? 0.5 : distance;
+
+                map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(centreLat, centreLon), Distance.FromKilometers(distance)));
+            }
+            else
+            {
+                map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(Constants.Default.LATITUDE, Constants.Default.LONGITUDE), Distance.FromKilometers(100)));
+            }
         }
     }
 }

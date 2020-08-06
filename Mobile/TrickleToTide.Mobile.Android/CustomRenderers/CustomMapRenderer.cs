@@ -38,31 +38,31 @@ namespace TrickleToTide.Mobile.Droid.CustomRenderers
             return null;
         }
 
-        protected override void OnElementChanged(Xamarin.Forms.Platform.Android.ElementChangedEventArgs<Map> e)
-        {
-            base.OnElementChanged(e);
+        //protected override void OnElementChanged(Xamarin.Forms.Platform.Android.ElementChangedEventArgs<Map> e)
+        //{
+        //    base.OnElementChanged(e);
 
-            if (e.OldElement != null)
-            {
-                NativeMap.InfoWindowClick -= OnInfoWindowClick;
-            }
+        //    if (e.OldElement != null)
+        //    {
+        //        NativeMap.InfoWindowClick -= OnInfoWindowClick;
+        //    }
 
-            if (e.NewElement != null)
-            {
-                var formsMap = (CustomMap)e.NewElement;
-                customPins = formsMap.CustomPins;
-            }
-        }
+        //    if (e.NewElement != null)
+        //    {
+        //        var formsMap = (CustomMap)e.NewElement;
+        //        customPins = formsMap.CustomPins;
+        //    }
+        //}
 
-        private void OnInfoWindowClick(object sender, GoogleMap.InfoWindowClickEventArgs e)
-        {
-        }
+        //private void OnInfoWindowClick(object sender, GoogleMap.InfoWindowClickEventArgs e)
+        //{
+        //}
 
         protected override void OnMapReady(GoogleMap map)
         {
             base.OnMapReady(map);
 
-            NativeMap.InfoWindowClick += OnInfoWindowClick;
+            //NativeMap.InfoWindowClick += OnInfoWindowClick;
             NativeMap.SetInfoWindowAdapter(this);
         }
     }
