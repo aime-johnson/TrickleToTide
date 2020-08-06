@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace TrickleToTide.Mobile.Interfaces
 {
@@ -15,5 +16,6 @@ namespace TrickleToTide.Mobile.Interfaces
         string ApiKey { get; }
         string ApiEndpoint { get; }
         string LogDirectory { get; }
+        void Toast(string message, bool quick = true);
     }
 }

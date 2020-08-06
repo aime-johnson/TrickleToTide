@@ -27,13 +27,11 @@ namespace TrickleToTide.Mobile.Droid.Services
 {
     class LocationUpdateService : ILocationUpdates
     {
-        private Guid _id;
         private readonly IGpsManager _gpsManager;
-        private bool _xxx = false;
+        private bool _gpsAvailable = false;
 
         public LocationUpdateService()
         {
-            _id = Guid.Parse(Preferences.Get(Constants.Preferences.ID, Guid.Empty.ToString()));
             _gpsManager = ShinyHost.Resolve<IGpsManager>();
 
             MessagingCenter.Subscribe<GpsDelegate, IGpsReading>(this, Constants.Message.LOCATION_UPDATED, async (sender, reading) =>
@@ -42,23 +40,19 @@ namespace TrickleToTide.Mobile.Droid.Services
                 {
                     try
                     {
-                        var positions = await Api.UpdatePositionAsync(new PositionUpdate()
+                        var positions = await State.UpdatePositionAsync(new PositionUpdate()
                         {
-                            Id = Id,
+                            Id = State.Id,
+                            Category = State.Category,
+                            Nickname = State.Nickname,
                             Latitude = reading.Position.Latitude,
                             Longitude = reading.Position.Longitude,
                             Altitude = reading.Altitude,
                             Accuracy = reading.PositionAccuracy,
                             Heading = reading.Heading,
                             Speed = reading.Speed,
-                            Timestamp = reading.Timestamp,
-                            Nickname = Preferences.Get(Constants.Preferences.NICKNAME, "")
+                            Timestamp = reading.Timestamp
                         });
-
-                        if(positions != null)
-                        {
-                            MessagingCenter.Send<PositionUpdate[]>(positions, Constants.Message.POSITIONS_UPDATED);
-                        }
                     }
                     catch (Exception ex)
                     {
@@ -66,30 +60,10 @@ namespace TrickleToTide.Mobile.Droid.Services
                     }
                 }
 
-                Preferences.Set(Constants.Preferences.LAST_LATITUDE, reading.Position.Latitude);
-                Preferences.Set(Constants.Preferences.LAST_LONGITUDE, reading.Position.Longitude);
+                State.LastKnownPosition = reading.Position;
             });
         }
 
-        public Guid Id
-        {
-            get
-            {
-                if (_id == default(Guid))
-                {
-                    if (!Preferences.ContainsKey(Constants.Preferences.ID))
-                    {
-                        _id = Guid.NewGuid();
-                        Preferences.Set(Constants.Preferences.ID, _id.ToString());
-                    }
-                    else
-                    {
-                        _id = Guid.Parse(Preferences.Get(Constants.Preferences.ID, Guid.Empty.ToString()));
-                    }
-                }
-                return _id;
-            }
-        }
 
         public async void StartGps()
         {
@@ -108,8 +82,9 @@ namespace TrickleToTide.Mobile.Droid.Services
                 }
                 else
                 {
-                    _xxx = true;
+                    _gpsAvailable = true;
                     Log.Event($"GPS Connected");
+                    State.ResetThrottle();
                     MessagingCenter.Send<IGpsManager>(_gpsManager, Constants.Message.GPS_STATE_CHANGED);
                 }
             }
@@ -126,12 +101,12 @@ namespace TrickleToTide.Mobile.Droid.Services
             }
         }
 
-        public bool IsGpsConnected => _xxx && _gpsManager.IsListening;
+        public bool IsGpsConnected => _gpsAvailable && _gpsManager.IsListening;
 
         public void Start()
         {
             Android.App.Application.Context.StartForegroundService<KeepAliveService>();
-            Api.ResetThrottle();
+            State.ResetThrottle();
             IsRunning = true;
             MessagingCenter.Send<ILocationUpdates>(this, Constants.Message.TRACKING_STATE_CHANGED);
             Log.Event("Start Tracking");
@@ -193,8 +168,8 @@ namespace TrickleToTide.Mobile.Droid.Services
             // Building channel if API verion is 26 or above
             if (global::Android.OS.Build.VERSION.SdkInt >= BuildVersionCodes.O)
             {
-                NotificationChannel notificationChannel = new NotificationChannel(foregroundChannelId, "Title", NotificationImportance.High);
-                notificationChannel.Importance = NotificationImportance.High;
+                NotificationChannel notificationChannel = new NotificationChannel(foregroundChannelId, "Title", NotificationImportance.None);
+                notificationChannel.Importance = NotificationImportance.None;
                 //notificationChannel.EnableLights(true);
                 //notificationChannel.EnableVibration(true);
                 notificationChannel.SetShowBadge(true);

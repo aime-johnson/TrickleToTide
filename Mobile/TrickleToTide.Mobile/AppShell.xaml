@@ -5,8 +5,10 @@
        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
        mc:Ignorable="d"
        xmlns:local="clr-namespace:TrickleToTide.Mobile.Views"
-       Title="TrickleToTide.Mobile"
-       x:Class="TrickleToTide.Mobile.AppShell">
+       Title="Trickle to Tide"
+       FlyoutBehavior="Flyout"
+       x:Class="TrickleToTide.Mobile.AppShell"
+       >
 
     <!-- 
         Styles and Resources 
@@ -29,54 +31,14 @@
         </ResourceDictionary>
     </Shell.Resources>
 
-    <!-- Your Pages -->
-    <TabBar>
-        <Tab Title="Main" Icon="tab_feed.png">
-            <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
-        </Tab>
-        <Tab Title="Settings" Icon="tab_feed.png">
-            <ShellContent ContentTemplate="{DataTemplate local:SettingsPage}" />
-        </Tab>
-        <Tab Title="Log" Icon="tab_feed.png">
-            <ShellContent ContentTemplate="{DataTemplate local:LogPage}" />
-        </Tab>
-    </TabBar>
+    <Shell.FlyoutHeader>
+        <Image Source="ttt_splash"/>
+    </Shell.FlyoutHeader>
 
-    <!--<FlyoutItem Title="Main" Icon="tab_feed.png">
-        <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
+    <FlyoutItem Icon="home" Title="Home">
+        <local:MainPage/>
     </FlyoutItem>
-    <FlyoutItem Title="About" Icon="tab_about.png">
-        <ShellContent ContentTemplate="{DataTemplate local:AboutPage}" />
-    </FlyoutItem>-->
 
-    <!-- Optional Templates 
-    // These may be provided inline as below or as separate classes.
-
-    // This header appears at the top of the Flyout.
-    <Shell.FlyoutHeaderTemplate>
-        <DataTemplate>
-            <Grid>ContentHere</Grid>
-        </DataTemplate>
-    </Shell.FlyoutHeaderTemplate>
-
-    // ItemTemplate is for ShellItems as displayed in a Flyout
-    <Shell.ItemTemplate>
-        <DataTemplate>
-            <ContentView>
-                Bindable Properties: Title, Icon
-            </ContentView>
-        </DataTemplate>
-    </Shell.ItemTemplate>
-
-    // MenuItemTemplate is for MenuItems as displayed in a Flyout
-    <Shell.MenuItemTemplate>
-        <DataTemplate>
-            <ContentView>
-                Bindable Properties: Text, Icon
-            </ContentView>
-        </DataTemplate>
-    </Shell.MenuItemTemplate>
-
-    -->
-
+    <MenuItem Icon="cog" Text="Settings" Command="{Binding SettingsCommand}"/>
+    <MenuItem Icon="format_align_justify" Text="Log" Command="{Binding LogCommand}"/>
 </Shell>

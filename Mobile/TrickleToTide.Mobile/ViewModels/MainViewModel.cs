@@ -3,8 +3,11 @@ using Shiny.Locations;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using TrickleToTide.Common;
 using TrickleToTide.Mobile.Interfaces;
+using TrickleToTide.Mobile.Services;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -13,67 +16,73 @@ namespace TrickleToTide.Mobile.ViewModels
     class MainViewModel : BaseViewModel
     {
         private readonly ILocationUpdates _updates;
-        private readonly ObservableCollection<PositionViewModel> _positions = new ObservableCollection<PositionViewModel>();
 
         public MainViewModel()
         {
             _updates = DependencyService.Get<ILocationUpdates>();
 
             MessagingCenter.Subscribe<ILocationUpdates>(this, Constants.Message.TRACKING_STATE_CHANGED, (sender) => {
-                StartCommand.ChangeCanExecute();
-                StopCommand.ChangeCanExecute();
+                UpdateStartStopAvailablilty();
+                OnPropertyChanged("Title");
             });
 
-            MessagingCenter.Subscribe<IGpsManager>(this, Constants.Message.GPS_STATE_CHANGED, (sender) => {
+
+            MessagingCenter.Subscribe<IGpsManager>(this, Constants.Message.GPS_STATE_CHANGED, (sender) =>
+            {
                 if (_updates.IsRunning && !sender.IsListening)
                 {
                     _updates.Stop();
                 }
-                StartCommand.ChangeCanExecute();
+                UpdateStartStopAvailablilty();
+                OnPropertyChanged("Title");
             });
 
-            MessagingCenter.Subscribe<PositionUpdate[]>(this, Constants.Message.POSITIONS_UPDATED, (positions)=> {
-                MainThread.BeginInvokeOnMainThread(() => {
-                    foreach (var pos in positions)
-                    {
-                        var position = _positions.SingleOrDefault(p => p.Id == pos.Id);
-                        if (position == null)
-                        {
-                            position = new PositionViewModel()
-                            {
-                                Id = pos.Id,
-                                Address = "address",
-                                Description = pos.Nickname ?? "no-name",
-                                Position = new Xamarin.Forms.Maps.Position(pos.Latitude, pos.Longitude)
-                        };
 
-                            _positions.Add(position);
-                        }
-
-                        position.Address = "address";
-                        position.Description = pos.Nickname ?? "no-name";
-                        position.Position = new Xamarin.Forms.Maps.Position(pos.Latitude, pos.Longitude);
-                    }
-                });
+            MessagingCenter.Subscribe<string>(this, Constants.Message.TARGET_UPDATED, (target) => {
+                OnPropertyChanged("Title");
             });
         }
 
-        public ObservableCollection<PositionViewModel> Positions => _positions;
+        public ObservableCollection<PositionViewModel> Positions => State.Positions;
+        public string Title => "Trickle to Tide" + (_updates.IsRunning ? $" (Following {State.SelectedTarget})" :"" );
+
 
         private Command _startCommand;
-        public Command StartCommand => _startCommand ?? (_startCommand = new Command(_ => _updates.Start(), _ => !_updates.IsRunning && _updates.IsGpsConnected));
+        public Command StartCommand => _startCommand ?? (_startCommand = new Command(_ => _updates.Start(), _ => CanStart));
 
         private Command _stopCommand;
-        public Command StopCommand => _stopCommand ?? (_stopCommand = new Command(_ => _updates.Stop(), _ => _updates.IsRunning && _updates.IsGpsConnected));
+        public Command StopCommand => _stopCommand ?? (_stopCommand = new Command(_ => _updates.Stop(), _ => CanStop));
+
+        public bool CanStart => !_updates.IsRunning && _updates.IsGpsConnected;
+        public bool CanStop => _updates.IsRunning && _updates.IsGpsConnected;
+
+        private Command _setTargetCommand;
+        public Command SetTargetCommand => _setTargetCommand ?? (_setTargetCommand = new Command(_ => SetTarget(), _ => CanStop));
+
+
+        private void SetTarget()
+        {
+            State.CycleTarget();
+        }
+
+        private void UpdateStartStopAvailablilty()
+        {
+            OnPropertyChanged("CanStart");
+            OnPropertyChanged("CanStop");
+            StartCommand.ChangeCanExecute();
+            StopCommand.ChangeCanExecute();
+            SetTargetCommand.ChangeCanExecute();
+        }
     }
 
 
-    class PositionViewModel : BaseViewModel
+    public class PositionViewModel : BaseViewModel
     {
         public Guid Id { get; set; }
-        public string Address { get; set; }
-        public string Description { get; set; }
-    
+        public string Category { get; set; }
+        public string Nickname { get; set; }
+        public DateTime Timestamp { get; set; }
+
         private Xamarin.Forms.Maps.Position _position;
         public Xamarin.Forms.Maps.Position Position
         {

@@ -14,6 +14,8 @@ namespace TrickleToTide.Mobile
     {
         public static ObservableCollection<LogEvent> Events { get; } = new ObservableCollection<LogEvent>();
         public static string LogDirectory { get; private set; }
+        
+        private const int MAX = 100;
 
         static Log()
         {
@@ -29,7 +31,7 @@ namespace TrickleToTide.Mobile
                     Message = message
                 });
 
-                while (Events.Count() > 1000)
+                while (Events.Count() > MAX)
                 {
                     Events.RemoveAt(Events.Count() - 1);
                 }
