@@ -3,6 +3,7 @@ using Shiny.Locations;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using TrickleToTide.Common;
 using TrickleToTide.Mobile.Interfaces;
 using TrickleToTide.Mobile.Services;
@@ -36,6 +37,7 @@ namespace TrickleToTide.Mobile.ViewModels
 
         public ObservableCollection<PositionViewModel> Positions => State.Positions;
 
+
         private Command _startCommand;
         public Command StartCommand => _startCommand ?? (_startCommand = new Command(_ => _updates.Start(), _ => CanStart));
 
@@ -44,6 +46,7 @@ namespace TrickleToTide.Mobile.ViewModels
 
         public bool CanStart => !_updates.IsRunning && _updates.IsGpsConnected;
         public bool CanStop => _updates.IsRunning && _updates.IsGpsConnected;
+
 
         private void UpdateStartStopAvailablilty()
         {

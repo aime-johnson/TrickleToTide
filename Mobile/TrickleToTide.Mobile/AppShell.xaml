@@ -5,8 +5,10 @@
        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
        mc:Ignorable="d"
        xmlns:local="clr-namespace:TrickleToTide.Mobile.Views"
-       Title="TrickleToTide.Mobile"
-       x:Class="TrickleToTide.Mobile.AppShell">
+       Title="Trickle to Tide"
+       FlyoutBehavior="Flyout"
+       x:Class="TrickleToTide.Mobile.AppShell"
+       >
 
     <!-- 
         Styles and Resources 
@@ -29,8 +31,19 @@
         </ResourceDictionary>
     </Shell.Resources>
 
+    <Shell.FlyoutHeader>
+        <Image Source="ttt_splash"/>
+    </Shell.FlyoutHeader>
+
+    <FlyoutItem Icon="home" Title="Home">
+        <local:MainPage/>
+    </FlyoutItem>
+
+    <MenuItem Icon="cog" Text="Settings" Command="{Binding SettingsCommand}"/>
+    <MenuItem Icon="format_align_justify" Text="Log" Command="{Binding LogCommand}"/>
+
     <!-- Your Pages -->
-    <TabBar>
+    <!--<TabBar>
         <Tab Title="Main" Icon="tab_feed.png">
             <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
         </Tab>
@@ -40,8 +53,9 @@
         <Tab Title="Log" Icon="tab_feed.png">
             <ShellContent ContentTemplate="{DataTemplate local:LogPage}" />
         </Tab>
-    </TabBar>
-
+    </TabBar>-->
+    
+    
     <!--<FlyoutItem Title="Main" Icon="tab_feed.png">
         <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
     </FlyoutItem>

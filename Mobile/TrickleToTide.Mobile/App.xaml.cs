@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TrickleToTide.Mobile.Interfaces;
 using TrickleToTide.Mobile.Services;
+using TrickleToTide.Mobile.Views;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -25,6 +26,9 @@ namespace TrickleToTide.Mobile
             DeviceDisplay.KeepScreenOn = true;
 
             MainPage = new AppShell();
+
+            Routing.RegisterRoute("settings", typeof(SettingsPage));
+            Routing.RegisterRoute("log", typeof(LogPage));
         }
 
 

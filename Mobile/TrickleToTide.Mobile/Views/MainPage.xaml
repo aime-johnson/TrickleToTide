@@ -7,10 +7,7 @@
              xmlns:ctl="clr-namespace:TrickleToTide.Mobile.Controls"
              mc:Ignorable="d"
              x:Class="TrickleToTide.Mobile.Views.MainPage"
-             Title="Main">
-    <ContentPage.ToolbarItems>
-    </ContentPage.ToolbarItems>
-
+             Title="Trickle to Tide">
     <ContentPage.Content>
         <Grid>
             <!--
