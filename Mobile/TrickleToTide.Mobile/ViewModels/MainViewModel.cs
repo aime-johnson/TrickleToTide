@@ -2,6 +2,7 @@
 using Shiny.Locations;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -24,6 +25,8 @@ namespace TrickleToTide.Mobile.ViewModels
             MessagingCenter.Subscribe<ILocationUpdates>(this, Constants.Message.TRACKING_STATE_CHANGED, (sender) => {
                 UpdateStartStopAvailablilty();
                 OnPropertyChanged("Title");
+                OnPropertyChanged("ShowStartHint");
+                OnPropertyChanged("WaitingForPositions");
             });
 
 
@@ -35,16 +38,29 @@ namespace TrickleToTide.Mobile.ViewModels
                 }
                 UpdateStartStopAvailablilty();
                 OnPropertyChanged("Title");
+                OnPropertyChanged("ShowStartHint");
+                OnPropertyChanged("WaitingForPositions");
             });
 
 
             MessagingCenter.Subscribe<string>(this, Constants.Message.TARGET_UPDATED, (target) => {
                 OnPropertyChanged("Title");
             });
+
+            MessagingCenter.Subscribe<PositionUpdate[]>(this, Constants.Message.POSITIONS_UPDATED, (positions) =>
+            {
+                OnPropertyChanged("WaitingForPositions");
+            });
+
+            // Force a re-build
+            State.Positions.Clear();
+            State.ResetThrottle();
         }
 
         public ObservableCollection<PositionViewModel> Positions => State.Positions;
         public string Title => "Trickle to Tide" + (_updates.IsRunning ? $" (Following {State.SelectedTarget})" :"" );
+        public bool WaitingForPositions => _updates.IsRunning && !Positions.Any();
+        public bool ShowStartHint => _updates.IsGpsConnected && !_updates.IsRunning;
 
 
         private Command _startCommand;

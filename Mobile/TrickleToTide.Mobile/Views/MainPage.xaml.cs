@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TrickleToTide.Common;
 using TrickleToTide.Mobile.Delegates;
+using TrickleToTide.Mobile.Interfaces;
 using TrickleToTide.Mobile.Services;
 using TrickleToTide.Mobile.ViewModels;
 using Xamarin.Essentials;
@@ -24,12 +25,13 @@ namespace TrickleToTide.Mobile.Views
 
             BindingContext = new MainViewModel();
 
-
-            MessagingCenter.Subscribe<PositionUpdate[]>(this, Constants.Message.POSITIONS_UPDATED, (positions) =>
-            {
+            MessagingCenter.Subscribe<ILocationUpdates>(this, Constants.Message.TRACKING_STATE_CHANGED, (sender) => {
                 CentreAndZoom();
             });
 
+            MessagingCenter.Subscribe<PositionUpdate[]>(this, Constants.Message.POSITIONS_UPDATED, (positions) => {
+                CentreAndZoom();
+            });
 
             MessagingCenter.Subscribe<string>(this, Constants.Message.TARGET_UPDATED, (target) => {
                 CentreAndZoom();

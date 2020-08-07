@@ -21,9 +21,7 @@
                       ItemsSource="{Binding Positions}">
                 <maps:Map.ItemTemplate>
                     <DataTemplate>
-                        <maps:Pin Position="{Binding Position}"
-                                  Address="{Binding Category}"
-                                  Label="{Binding Nickname}"/>
+                        <maps:Pin Position="{Binding Position}" Address="{Binding Category}" Label="{Binding Nickname}"/>
                     </DataTemplate>
                 </maps:Map.ItemTemplate>
             </maps:Map>
@@ -39,11 +37,20 @@
             </ctl:CustomMap>-->
             
             <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="Start" Margin="20">
-                <ImageButton WidthRequest="50" IsVisible="{Binding CanStart}" BackgroundColor="Transparent" Source="start_icon" Command="{Binding StartCommand}"/>
-                <ImageButton WidthRequest="50" IsVisible="{Binding CanStop}" BackgroundColor="Transparent" Source="stop_icon" Command="{Binding StopCommand}"/>
+                <ImageButton WidthRequest="50" Opacity="0.6" IsVisible="{Binding CanStart}" BackgroundColor="Transparent" Source="start_icon" Command="{Binding StartCommand}"/>
+                <ImageButton WidthRequest="50" Opacity="0.6" IsVisible="{Binding CanStop}" BackgroundColor="Transparent" Source="stop_icon" Command="{Binding StopCommand}"/>
 
-                <ImageButton WidthRequest="60" IsVisible="{Binding CanStop}" BackgroundColor="Transparent" Source="locate_icon" Command="{Binding SetTargetCommand}"/>
+                <ImageButton WidthRequest="50" Opacity="0.6" IsVisible="{Binding CanStop}" BackgroundColor="Transparent" Source="locate_icon" Command="{Binding SetTargetCommand}"/>
+
+                <StackLayout Orientation="Horizontal" IsVisible="{Binding WaitingForPositions}">
+                    <Label Text="Waiting for update..." VerticalOptions="Center"  />
+                </StackLayout>
+
+                <!--<StackLayout Orientation="Horizontal" IsVisible="{Binding ShowStartHint}">
+                    <Label Text="Click start!" VerticalOptions="Center" FontSize="Large"/>
+                </StackLayout>-->
             </StackLayout>
+
         </Grid>
     </ContentPage.Content>
 </ContentPage>
