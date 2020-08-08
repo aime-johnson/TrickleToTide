@@ -11,7 +11,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using TrickleToTide.Mobile.Controls;
+using TrickleToTide.Mobile.UI;
 using TrickleToTide.Mobile.Droid.CustomRenderers;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;

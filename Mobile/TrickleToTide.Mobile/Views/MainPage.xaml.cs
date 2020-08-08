@@ -86,5 +86,32 @@ namespace TrickleToTide.Mobile.Views
                 map.MoveToRegion(MapSpan.FromCenterAndRadius(new Position(Constants.Default.LATITUDE, Constants.Default.LONGITUDE), Distance.FromKilometers(100)));
             }
         }
+
+
+        // Route pin clicks back to VM (Select position)
+        private void MarkerClicked(object sender, PinClickedEventArgs e)
+        {
+            var pin = sender as Pin;
+            if(pin != null)
+            {
+                var x = pin.BindingContext as PositionViewModel;
+                var vm = BindingContext as MainViewModel;
+                if (x != null && vm != null)
+                {
+                    vm.SelectedPosition = x;
+                }
+            }
+        }
+
+
+        // Rout map clicks back to VM (Un-Select position)
+        private void MapClicked(object sender, MapClickedEventArgs e)
+        {
+            var vm = BindingContext as MainViewModel;
+            if (vm != null)
+            {
+                vm.SelectedPosition = null;
+            }
+        }
     }
 }

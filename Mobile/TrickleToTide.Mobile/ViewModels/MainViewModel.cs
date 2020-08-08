@@ -1,15 +1,11 @@
-﻿using Shiny;
-using Shiny.Locations;
+﻿using Shiny.Locations;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
+using System.Text;
 using TrickleToTide.Common;
 using TrickleToTide.Mobile.Interfaces;
 using TrickleToTide.Mobile.Services;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace TrickleToTide.Mobile.ViewModels
@@ -27,6 +23,7 @@ namespace TrickleToTide.Mobile.ViewModels
                 OnPropertyChanged("Title");
                 OnPropertyChanged("ShowStartHint");
                 OnPropertyChanged("WaitingForPositions");
+                OnPropertyChanged("SelectedPositionSummary");
             });
 
 
@@ -40,16 +37,19 @@ namespace TrickleToTide.Mobile.ViewModels
                 OnPropertyChanged("Title");
                 OnPropertyChanged("ShowStartHint");
                 OnPropertyChanged("WaitingForPositions");
+                OnPropertyChanged("SelectedPositionSummary");
             });
 
 
             MessagingCenter.Subscribe<string>(this, Constants.Message.TARGET_UPDATED, (target) => {
                 OnPropertyChanged("Title");
+                OnPropertyChanged("SelectedPositionSummary");
             });
 
             MessagingCenter.Subscribe<PositionUpdate[]>(this, Constants.Message.POSITIONS_UPDATED, (positions) =>
             {
                 OnPropertyChanged("WaitingForPositions");
+                OnPropertyChanged("SelectedPositionSummary");
             });
 
             // Force a re-build
@@ -57,10 +57,13 @@ namespace TrickleToTide.Mobile.ViewModels
             State.ResetThrottle();
         }
 
+
         public ObservableCollection<PositionViewModel> Positions => State.Positions;
         public string Title => "Trickle to Tide" + (_updates.IsRunning ? $" (Following {State.SelectedTarget})" :"" );
         public bool WaitingForPositions => _updates.IsRunning && !Positions.Any();
-        public bool ShowStartHint => _updates.IsGpsConnected && !_updates.IsRunning;
+        public bool CanStart => !_updates.IsRunning && _updates.IsGpsConnected;
+        public bool CanStop => _updates.IsRunning && _updates.IsGpsConnected;
+
 
 
         private Command _startCommand;
@@ -69,11 +72,43 @@ namespace TrickleToTide.Mobile.ViewModels
         private Command _stopCommand;
         public Command StopCommand => _stopCommand ?? (_stopCommand = new Command(_ => _updates.Stop(), _ => CanStop));
 
-        public bool CanStart => !_updates.IsRunning && _updates.IsGpsConnected;
-        public bool CanStop => _updates.IsRunning && _updates.IsGpsConnected;
-
         private Command _setTargetCommand;
         public Command SetTargetCommand => _setTargetCommand ?? (_setTargetCommand = new Command(_ => SetTarget(), _ => CanStop));
+
+        private PositionViewModel _selectedPosition;
+        public PositionViewModel SelectedPosition 
+        { 
+            get => _selectedPosition;
+            set
+            {
+                if(SetProperty(ref _selectedPosition, value))
+                {
+                    OnPropertyChanged("IsPositionSelected");
+                    OnPropertyChanged("SelectedPositionSummary");
+                }
+            }
+        }
+
+        public bool IsPositionSelected => SelectedPosition != null;
+        public string SelectedPositionSummary
+        {
+            get
+            {
+                var summary = new StringBuilder();
+
+                if(SelectedPosition != null)
+                {
+                    foreach(var pos in Positions.Where(p=>p.Id != SelectedPosition.Id))
+                    {
+                        summary.AppendLine("<div>");
+                        summary.AppendLine($"<strong>{pos.Nickname}</strong>: {pos.Timestamp}");
+                        summary.AppendLine("</div>");
+                    }
+                }
+
+                return summary.ToString();
+            }
+        }
 
 
         private void SetTarget()

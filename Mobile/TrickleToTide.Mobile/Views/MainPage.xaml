@@ -4,53 +4,48 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
-             xmlns:ctl="clr-namespace:TrickleToTide.Mobile.Controls"
+             xmlns:ui="clr-namespace:TrickleToTide.Mobile.UI"
              mc:Ignorable="d"
              x:Class="TrickleToTide.Mobile.Views.MainPage"
              Title="{Binding Title}">
     <ContentPage.Content>
         <Grid>
-            <!--
-            HasZoomEnabled="False"
-            HasScrollEnabled="False"
-            IsShowingUser="True"
-            -->
             <maps:Map x:Name="map"
                       HasZoomEnabled="False"
                       HasScrollEnabled="False"
-                      ItemsSource="{Binding Positions}">
+                      ItemsSource="{Binding Positions}"
+                      MapClicked="MapClicked">
                 <maps:Map.ItemTemplate>
                     <DataTemplate>
-                        <maps:Pin Position="{Binding Position}" Address="{Binding Category}" Label="{Binding Nickname}"/>
+                        <maps:Pin 
+                            Position="{Binding Position}" 
+                            Address="{Binding Category}" 
+                            Label="{Binding Nickname}"
+                            MarkerClicked="MarkerClicked"/>
                     </DataTemplate>
                 </maps:Map.ItemTemplate>
             </maps:Map>
 
-            <!--<ctl:CustomMap x:Name="map" ItemsSource="{Binding Positions}">
-                <ctl:CustomMap.ItemTemplate>
-                    <DataTemplate>
-                        <maps:Pin Position="{Binding Position}"
-                                  Address="{Binding Category}"
-                                  Label="{Binding Nickname}"/>
-                    </DataTemplate>
-                </ctl:CustomMap.ItemTemplate>
-            </ctl:CustomMap>-->
-            
-            <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="Start" Margin="20">
-                <ImageButton WidthRequest="50" Opacity="0.6" IsVisible="{Binding CanStart}" BackgroundColor="Transparent" Source="start_icon" Command="{Binding StartCommand}"/>
-                <ImageButton WidthRequest="50" Opacity="0.6" IsVisible="{Binding CanStop}" BackgroundColor="Transparent" Source="stop_icon" Command="{Binding StopCommand}"/>
+            <Grid VerticalOptions="End" Margin="20">
+                <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="FillAndExpand">
+                    <ImageButton VerticalOptions="End" WidthRequest="50" Opacity="0.6" IsVisible="{Binding CanStart}" BackgroundColor="Transparent" Source="start_icon" Command="{Binding StartCommand}"/>
+                    <ImageButton VerticalOptions="End" WidthRequest="50" Opacity="0.6" IsVisible="{Binding CanStop}" BackgroundColor="Transparent" Source="stop_icon" Command="{Binding StopCommand}"/>
 
-                <ImageButton WidthRequest="50" Opacity="0.6" IsVisible="{Binding CanStop}" BackgroundColor="Transparent" Source="locate_icon" Command="{Binding SetTargetCommand}"/>
+                    <ImageButton VerticalOptions="End" WidthRequest="50" Opacity="0.6" IsVisible="{Binding CanStop}" BackgroundColor="Transparent" Source="locate_icon" Command="{Binding SetTargetCommand}"/>
 
-                <StackLayout Orientation="Horizontal" IsVisible="{Binding WaitingForPositions}">
-                    <Label Text="Waiting for update..." VerticalOptions="Center"  />
+                    <StackLayout Orientation="Horizontal" IsVisible="{Binding WaitingForPositions}">
+                        <Label Text="Waiting for update..." VerticalOptions="Center"  />
+                    </StackLayout>
+
+                    <Grid HorizontalOptions="FillAndExpand" VerticalOptions="End" IsVisible="{Binding IsPositionSelected}">
+                        <Frame HasShadow="True" BackgroundColor="White" Margin="0" Padding="5">
+                            <Label Text="{Binding SelectedPositionSummary}" TextType="Html"/>
+                        </Frame>
+                    </Grid>
                 </StackLayout>
 
-                <!--<StackLayout Orientation="Horizontal" IsVisible="{Binding ShowStartHint}">
-                    <Label Text="Click start!" VerticalOptions="Center" FontSize="Large"/>
-                </StackLayout>-->
-            </StackLayout>
 
+            </Grid>
         </Grid>
     </ContentPage.Content>
 </ContentPage>
