@@ -2260,6 +2260,7 @@ namespace TrickleToTide.Mobile.Droid
 			global::Xamarin.Forms.Maps.Android.Resource.String.fab_transformation_sheet_behavior = global::TrickleToTide.Mobile.Droid.Resource.String.fab_transformation_sheet_behavior;
 			global::Xamarin.Forms.Maps.Android.Resource.String.hide_bottom_view_on_scroll_behavior = global::TrickleToTide.Mobile.Droid.Resource.String.hide_bottom_view_on_scroll_behavior;
 			global::Xamarin.Forms.Maps.Android.Resource.String.mtrl_chip_close_icon_content_description = global::TrickleToTide.Mobile.Droid.Resource.String.mtrl_chip_close_icon_content_description;
+			global::Xamarin.Forms.Maps.Android.Resource.String.overflow_tab_title = global::TrickleToTide.Mobile.Droid.Resource.String.overflow_tab_title;
 			global::Xamarin.Forms.Maps.Android.Resource.String.password_toggle_content_description = global::TrickleToTide.Mobile.Droid.Resource.String.password_toggle_content_description;
 			global::Xamarin.Forms.Maps.Android.Resource.String.path_password_eye = global::TrickleToTide.Mobile.Droid.Resource.String.path_password_eye;
 			global::Xamarin.Forms.Maps.Android.Resource.String.path_password_eye_mask_strike_through = global::TrickleToTide.Mobile.Droid.Resource.String.path_password_eye_mask_strike_through;
@@ -4862,6 +4863,7 @@ namespace TrickleToTide.Mobile.Droid
 			global::Xamarin.Forms.Platform.Android.Resource.String.fab_transformation_sheet_behavior = global::TrickleToTide.Mobile.Droid.Resource.String.fab_transformation_sheet_behavior;
 			global::Xamarin.Forms.Platform.Android.Resource.String.hide_bottom_view_on_scroll_behavior = global::TrickleToTide.Mobile.Droid.Resource.String.hide_bottom_view_on_scroll_behavior;
 			global::Xamarin.Forms.Platform.Android.Resource.String.mtrl_chip_close_icon_content_description = global::TrickleToTide.Mobile.Droid.Resource.String.mtrl_chip_close_icon_content_description;
+			global::Xamarin.Forms.Platform.Android.Resource.String.overflow_tab_title = global::TrickleToTide.Mobile.Droid.Resource.String.overflow_tab_title;
 			global::Xamarin.Forms.Platform.Android.Resource.String.password_toggle_content_description = global::TrickleToTide.Mobile.Droid.Resource.String.password_toggle_content_description;
 			global::Xamarin.Forms.Platform.Android.Resource.String.path_password_eye = global::TrickleToTide.Mobile.Droid.Resource.String.path_password_eye;
 			global::Xamarin.Forms.Platform.Android.Resource.String.path_password_eye_mask_strike_through = global::TrickleToTide.Mobile.Droid.Resource.String.path_password_eye_mask_strike_through;
@@ -7431,6 +7433,7 @@ namespace TrickleToTide.Mobile.Droid
 			global::Xamarin.Forms.Platform.Resource.String.fab_transformation_sheet_behavior = global::TrickleToTide.Mobile.Droid.Resource.String.fab_transformation_sheet_behavior;
 			global::Xamarin.Forms.Platform.Resource.String.hide_bottom_view_on_scroll_behavior = global::TrickleToTide.Mobile.Droid.Resource.String.hide_bottom_view_on_scroll_behavior;
 			global::Xamarin.Forms.Platform.Resource.String.mtrl_chip_close_icon_content_description = global::TrickleToTide.Mobile.Droid.Resource.String.mtrl_chip_close_icon_content_description;
+			global::Xamarin.Forms.Platform.Resource.String.overflow_tab_title = global::TrickleToTide.Mobile.Droid.Resource.String.overflow_tab_title;
 			global::Xamarin.Forms.Platform.Resource.String.password_toggle_content_description = global::TrickleToTide.Mobile.Droid.Resource.String.password_toggle_content_description;
 			global::Xamarin.Forms.Platform.Resource.String.path_password_eye = global::TrickleToTide.Mobile.Droid.Resource.String.path_password_eye;
 			global::Xamarin.Forms.Platform.Resource.String.path_password_eye_mask_strike_through = global::TrickleToTide.Mobile.Droid.Resource.String.path_password_eye_mask_strike_through;
@@ -13163,25 +13166,28 @@ namespace TrickleToTide.Mobile.Droid
 			public const int mtrl_chip_close_icon_content_description = 2131558467;
 			
 			// aapt resource value: 0x7F0D0044
-			public const int password_toggle_content_description = 2131558468;
+			public const int overflow_tab_title = 2131558468;
 			
 			// aapt resource value: 0x7F0D0045
-			public const int path_password_eye = 2131558469;
+			public const int password_toggle_content_description = 2131558469;
 			
 			// aapt resource value: 0x7F0D0046
-			public const int path_password_eye_mask_strike_through = 2131558470;
+			public const int path_password_eye = 2131558470;
 			
 			// aapt resource value: 0x7F0D0047
-			public const int path_password_eye_mask_visible = 2131558471;
+			public const int path_password_eye_mask_strike_through = 2131558471;
 			
 			// aapt resource value: 0x7F0D0048
-			public const int path_password_strike_through = 2131558472;
+			public const int path_password_eye_mask_visible = 2131558472;
 			
 			// aapt resource value: 0x7F0D0049
-			public const int search_menu_title = 2131558473;
+			public const int path_password_strike_through = 2131558473;
 			
 			// aapt resource value: 0x7F0D004A
-			public const int status_bar_notification_info_overflow = 2131558474;
+			public const int search_menu_title = 2131558474;
+			
+			// aapt resource value: 0x7F0D004B
+			public const int status_bar_notification_info_overflow = 2131558475;
 			
 			static String()
 			{

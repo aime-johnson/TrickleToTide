@@ -80,20 +80,22 @@ namespace TrickleToTide.Api
             position.Latitude = source.Latitude;
             position.Longitude = source.Longitude;
             position.Altitude = source.Altitude;
-            position.Heading = source.Heading;
-            position.Speed = source.Speed;
             position.Timestamp = source.Timestamp;
-            position.Accuracy = source.Accuracy;
+            
+            position.Heading = 0;
+            position.Accuracy = 0;
+            position.Speed = 0;
 
             position.History.Add(new PositionHistory()
             {
-                Accuracy = position.Accuracy,
                 Altitude = position.Altitude,
                 Timestamp = position.Timestamp,
-                Speed = position.Speed,
-                Heading = position.Heading,
                 Latitude = position.Latitude,
-                Longitude = position.Longitude
+                Longitude = position.Longitude,
+
+                Heading = 0,
+                Accuracy = 0,
+                Speed = 0
             });
 
             await _context.SaveChangesAsync();
@@ -107,14 +109,11 @@ namespace TrickleToTide.Api
             {
                 Id = p.Id,
                 Timestamp = p.Timestamp,
-                Accuracy = p.Accuracy,
                 Altitude = p.Altitude,
-                Heading = p.Heading,
                 Latitude = p.Latitude,
                 Longitude = p.Longitude,
                 Category = p.Category,
-                Nickname = p.Nickname,
-                Speed = p.Speed
+                Nickname = p.Nickname
             }).ToArray();
         }
     }

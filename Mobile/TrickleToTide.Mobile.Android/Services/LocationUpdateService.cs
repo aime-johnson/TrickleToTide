@@ -48,9 +48,6 @@ namespace TrickleToTide.Mobile.Droid.Services
                             Latitude = reading.Position.Latitude,
                             Longitude = reading.Position.Longitude,
                             Altitude = reading.Altitude,
-                            Accuracy = reading.PositionAccuracy,
-                            Heading = reading.Heading,
-                            Speed = reading.Speed,
                             Timestamp = reading.Timestamp
                         });
                     }

@@ -62,8 +62,17 @@ namespace TrickleToTide.Mobile.Views
                     }
                     break;
 
+
                 case TargetOption.Self:
-                    source = source.Where(x => x.Id == State.Id);
+                    if (State.SelectedId.HasValue)
+                    {
+                        source = source.Where(x => x.Id == State.Id || x.Id == State.SelectedId);
+                    }
+                    else
+                    {
+                        source = source.Where(x => x.Id == State.Id);
+
+                    }
                     break;
             }
 

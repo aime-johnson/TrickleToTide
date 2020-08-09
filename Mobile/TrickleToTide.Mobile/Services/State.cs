@@ -173,6 +173,19 @@ namespace TrickleToTide.Mobile.Services
             }
         }
 
+        private static Guid? _selectedId;
+        public static Guid? SelectedId
+        {
+            get => _selectedId;
+            set
+            {
+                if (_selectedId != value)
+                {
+                    _selectedId = value;
+                    MessagingCenter.Send<string>(SelectedTarget.ToString(), Constants.Message.TARGET_UPDATED);
+                }
+            }
+        }
 
         public static TargetOption SelectedTarget
         {
@@ -192,6 +205,7 @@ namespace TrickleToTide.Mobile.Services
             }
         }
 
+
         public static void CycleTarget()
         {
             var i = Array.IndexOf(_targetOptions, SelectedTarget);
@@ -199,7 +213,8 @@ namespace TrickleToTide.Mobile.Services
             {
                 i = -1;
             }
-            SelectedTarget = _targetOptions[i + 1];
+            var newTarget = _targetOptions[i + 1];
+            SelectedTarget = newTarget;
         }
 
 

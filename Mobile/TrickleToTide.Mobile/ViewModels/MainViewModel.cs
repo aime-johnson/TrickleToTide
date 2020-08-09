@@ -24,6 +24,7 @@ namespace TrickleToTide.Mobile.ViewModels
                 OnPropertyChanged("ShowStartHint");
                 OnPropertyChanged("WaitingForPositions");
                 OnPropertyChanged("SelectedPositionSummary");
+                OnPropertyChanged("SelectedPositionDetail");
             });
 
 
@@ -35,21 +36,23 @@ namespace TrickleToTide.Mobile.ViewModels
                 }
                 UpdateStartStopAvailablilty();
                 OnPropertyChanged("Title");
-                OnPropertyChanged("ShowStartHint");
                 OnPropertyChanged("WaitingForPositions");
                 OnPropertyChanged("SelectedPositionSummary");
+                OnPropertyChanged("SelectedPositionDetail");
             });
 
 
             MessagingCenter.Subscribe<string>(this, Constants.Message.TARGET_UPDATED, (target) => {
                 OnPropertyChanged("Title");
                 OnPropertyChanged("SelectedPositionSummary");
+                OnPropertyChanged("SelectedPositionDetail");
             });
 
             MessagingCenter.Subscribe<PositionUpdate[]>(this, Constants.Message.POSITIONS_UPDATED, (positions) =>
             {
                 OnPropertyChanged("WaitingForPositions");
                 OnPropertyChanged("SelectedPositionSummary");
+                OnPropertyChanged("SelectedPositionDetail");
             });
 
             // Force a re-build
@@ -83,8 +86,18 @@ namespace TrickleToTide.Mobile.ViewModels
             {
                 if(SetProperty(ref _selectedPosition, value))
                 {
+                    State.SelectedId = value?.Id;
+                    if (State.SelectedId.HasValue)
+                    {
+                        State.SelectedTarget = TargetOption.Self;
+                    }
+                    else
+                    {
+                        State.SelectedTarget = TargetOption.All;
+                    }
                     OnPropertyChanged("IsPositionSelected");
                     OnPropertyChanged("SelectedPositionSummary");
+                    OnPropertyChanged("SelectedPositionDetail");
                 }
             }
         }
@@ -95,18 +108,32 @@ namespace TrickleToTide.Mobile.ViewModels
             get
             {
                 var summary = new StringBuilder();
+                if(SelectedPosition!= null)
+                {
+                    summary.AppendLine($"<div><strong>{SelectedPosition.Nickname}</strong> {SelectedPosition.Timestamp}</div>");
+                }
+                return summary.ToString();
+            }
+        }
+        public string SelectedPositionDetail
+        {
+            get
+            {
+                var detail = new StringBuilder();
 
+                // Selected pin
                 if(SelectedPosition != null)
                 {
-                    foreach(var pos in Positions.Where(p=>p.Id != SelectedPosition.Id))
+                    detail.AppendLine($"<div>Distance from {SelectedPosition.Nickname} to:</div>");
+                    foreach (var pos in Positions.Where(p=>p.Id != SelectedPosition.Id))
                     {
-                        summary.AppendLine("<div>");
-                        summary.AppendLine($"<strong>{pos.Nickname}</strong>: {pos.Timestamp}");
-                        summary.AppendLine("</div>");
+                        detail.AppendLine("<div>");
+                        detail.AppendLine($"<strong>{pos.Nickname}</strong>: {pos.Timestamp}");
+                        detail.AppendLine("</div>");
                     }
                 }
 
-                return summary.ToString();
+                return detail.ToString();
             }
         }
 

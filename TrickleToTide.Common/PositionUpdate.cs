@@ -16,8 +16,8 @@ namespace TrickleToTide.Common
         public double Altitude { get; set; }
         public string Category { get; set; }
         public string Nickname { get; set; }
-        public double Accuracy { get; set; }
-        public double Heading { get; set; }
-        public double Speed { get; set; }
+        //public double Accuracy { get; set; }
+        //public double Heading { get; set; }
+        //public double Speed { get; set; }
     }
 }
