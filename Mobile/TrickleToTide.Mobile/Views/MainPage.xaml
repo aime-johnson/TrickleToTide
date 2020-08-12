@@ -39,14 +39,15 @@
                         </StackLayout>
                     </StackLayout>
 
-                    <Frame HorizontalOptions="FillAndExpand" VerticalOptions="End" CornerRadius="10" HasShadow="True" IsVisible="{Binding IsPositionSelected}" BackgroundColor="White">
-                        <Expander >
+                    <Frame HorizontalOptions="FillAndExpand" VerticalOptions="End" CornerRadius="10" HasShadow="True" IsVisible="{Binding IsPositionSelected}" BackgroundColor="White" Padding="5">
+                        <Expander CollapseAnimationLength="100" ExpandAnimationLength="100">
                             <Expander.Header>
-                                <Label Text="{Binding SelectedPositionSummary}"  TextType="Html"/>
+                                <Grid>
+                                    <Label HorizontalOptions="CenterAndExpand" Margin="5" Text="{Binding SelectedPositionSummary}" FontSize="Medium" FontAttributes="Bold"/>
+                                </Grid>
                             </Expander.Header>
-                            <Label Margin="10" Text="{Binding SelectedPositionDetail}" TextType="Html"/>
+                            <Label Margin="5" Text="{Binding SelectedPositionDetail}" TextType="Html"/>
                         </Expander>
-
                     </Frame>
                 </StackLayout>
 

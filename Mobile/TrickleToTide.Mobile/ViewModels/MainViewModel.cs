@@ -18,41 +18,17 @@ namespace TrickleToTide.Mobile.ViewModels
         {
             _updates = DependencyService.Get<ILocationUpdates>();
 
-            MessagingCenter.Subscribe<ILocationUpdates>(this, Constants.Message.TRACKING_STATE_CHANGED, (sender) => {
-                UpdateStartStopAvailablilty();
-                OnPropertyChanged("Title");
-                OnPropertyChanged("ShowStartHint");
-                OnPropertyChanged("WaitingForPositions");
-                OnPropertyChanged("SelectedPositionSummary");
-                OnPropertyChanged("SelectedPositionDetail");
-            });
+            MessagingCenter.Subscribe<ILocationUpdates>(this, Constants.Message.TRACKING_STATE_CHANGED, (sender) => RefreshUI());
+            MessagingCenter.Subscribe<string>(this, Constants.Message.TARGET_UPDATED, (target) => RefreshUI());
+            MessagingCenter.Subscribe<PositionUpdate[]>(this, Constants.Message.POSITIONS_UPDATED, (positions) => RefreshUI());
 
-
-            MessagingCenter.Subscribe<IGpsManager>(this, Constants.Message.GPS_STATE_CHANGED, (sender) =>
+            MessagingCenter.Subscribe<IGpsManager>(this, Constants.Message.GPS_STATE_CHANGED, (sender) => 
             {
                 if (_updates.IsRunning && !sender.IsListening)
                 {
                     _updates.Stop();
                 }
-                UpdateStartStopAvailablilty();
-                OnPropertyChanged("Title");
-                OnPropertyChanged("WaitingForPositions");
-                OnPropertyChanged("SelectedPositionSummary");
-                OnPropertyChanged("SelectedPositionDetail");
-            });
-
-
-            MessagingCenter.Subscribe<string>(this, Constants.Message.TARGET_UPDATED, (target) => {
-                OnPropertyChanged("Title");
-                OnPropertyChanged("SelectedPositionSummary");
-                OnPropertyChanged("SelectedPositionDetail");
-            });
-
-            MessagingCenter.Subscribe<PositionUpdate[]>(this, Constants.Message.POSITIONS_UPDATED, (positions) =>
-            {
-                OnPropertyChanged("WaitingForPositions");
-                OnPropertyChanged("SelectedPositionSummary");
-                OnPropertyChanged("SelectedPositionDetail");
+                RefreshUI();
             });
 
             // Force a re-build
@@ -103,6 +79,8 @@ namespace TrickleToTide.Mobile.ViewModels
         }
 
         public bool IsPositionSelected => SelectedPosition != null;
+        
+        
         public string SelectedPositionSummary
         {
             get
@@ -110,11 +88,21 @@ namespace TrickleToTide.Mobile.ViewModels
                 var summary = new StringBuilder();
                 if(SelectedPosition!= null)
                 {
-                    summary.AppendLine($"<div><strong>{SelectedPosition.Nickname}</strong> {SelectedPosition.Timestamp}</div>");
+                    var x = SelectedPosition.CalculateDistanceTo(
+                        new Xamarin.Forms.Maps.Position(State.LastKnownPosition.Latitude, State.LastKnownPosition.Longitude),
+                        GeoCodeCalcMeasurement.Kilometers);
+
+                    summary.Append($"{SelectedPosition.Nickname}");
+                    if(SelectedPosition.Id != State.Id)
+                    {
+                        summary.Append($" ({x:0.0}km from you)");
+                    }
                 }
                 return summary.ToString();
             }
         }
+
+
         public string SelectedPositionDetail
         {
             get
@@ -124,11 +112,20 @@ namespace TrickleToTide.Mobile.ViewModels
                 // Selected pin
                 if(SelectedPosition != null)
                 {
-                    detail.AppendLine($"<div>Distance from {SelectedPosition.Nickname} to:</div>");
-                    foreach (var pos in Positions.Where(p=>p.Id != SelectedPosition.Id))
+                    detail.AppendLine($"<div>Distance from <strong>{SelectedPosition.Nickname}</strong> to:</div>");
+                    var source = Positions.Where(p => p.Id != SelectedPosition.Id);
+                    if(State.Category != "Dev")
                     {
+                        source = source.Where(p => p.Category != "Dev");
+                    }
+                    foreach (var pos in source)
+                    {
+                        var x = SelectedPosition.CalculateDistanceTo(
+                            pos.Position,
+                            GeoCodeCalcMeasurement.Kilometers);
+
                         detail.AppendLine("<div>");
-                        detail.AppendLine($"<strong>{pos.Nickname}</strong>: {pos.Timestamp}");
+                        detail.AppendLine($"<strong>{pos.Nickname}:</strong> {x:0.0}km");
                         detail.AppendLine("</div>");
                     }
                 }
@@ -143,10 +140,15 @@ namespace TrickleToTide.Mobile.ViewModels
             State.CycleTarget();
         }
 
-        private void UpdateStartStopAvailablilty()
+
+        private void RefreshUI()
         {
             OnPropertyChanged("CanStart");
             OnPropertyChanged("CanStop");
+            OnPropertyChanged("Title");
+            OnPropertyChanged("WaitingForPositions");
+            OnPropertyChanged("SelectedPositionSummary");
+            OnPropertyChanged("SelectedPositionDetail");
             StartCommand.ChangeCanExecute();
             StopCommand.ChangeCanExecute();
             SetTargetCommand.ChangeCanExecute();
@@ -158,7 +160,14 @@ namespace TrickleToTide.Mobile.ViewModels
     {
         public Guid Id { get; set; }
         public string Category { get; set; }
-        public string Nickname { get; set; }
+
+        private string _nickName;
+        public string Nickname 
+        {
+            get => string.IsNullOrEmpty(_nickName) ? "Anon" : _nickName;
+            set { SetProperty(ref _nickName, value); }
+        }
+
         public DateTime Timestamp { get; set; }
 
         private Xamarin.Forms.Maps.Position _position;
@@ -166,6 +175,12 @@ namespace TrickleToTide.Mobile.ViewModels
         {
             get { return _position; }
             set { SetProperty(ref _position, value); }
+        }
+
+
+        public double CalculateDistanceTo(Xamarin.Forms.Maps.Position dest, GeoCodeCalcMeasurement units)
+        {
+            return GeoCode.CalcDistance(this.Position.Latitude, this.Position.Longitude, dest.Latitude, dest.Longitude, units);
         }
     }
 }
