@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TrickleToTide.Common;
@@ -19,6 +20,8 @@ namespace TrickleToTide.Mobile.Services
     public enum TargetOption
     {
         Self,
+        Selected,
+        SelfAndSelected,
         All
     }
 
@@ -30,7 +33,9 @@ namespace TrickleToTide.Mobile.Services
         private static readonly int _throttleSeconds = 60;
         private static readonly TargetOption[] _targetOptions = new[] { 
             TargetOption.All,
-            TargetOption.Self
+            TargetOption.Selected,
+            TargetOption.SelfAndSelected,
+            TargetOption.Self,
         };
 
         public static ObservableCollection<PositionViewModel> Positions { get; } = new ObservableCollection<PositionViewModel>();
@@ -44,6 +49,8 @@ namespace TrickleToTide.Mobile.Services
             _client.Timeout = TimeSpan.FromSeconds(120);
             _platform = DependencyService.Resolve<IPlatform>();
             _id = Guid.Parse(Preferences.Get(Constants.Preferences.ID, Guid.Empty.ToString()));
+
+            SelectedTarget = TargetOption.All;
         }
 
 
@@ -199,24 +206,73 @@ namespace TrickleToTide.Mobile.Services
                 {
                     Preferences.Set(Constants.Preferences.LOCATE_OPTION, value.ToString());
                     MessagingCenter.Send<string>(value.ToString(), Constants.Message.TARGET_UPDATED);
-                    _platform.Toast("Following " + SelectedTarget.ToString());
+                    
+                    _platform.Toast("Following " + Humanize(SelectedTarget));
                     Log.Event("Following " + SelectedTarget.ToString());
+                    State.ResetThrottle();
                 }
             }
         }
 
+        private static string Humanize(TargetOption selectedTarget)
+        {
+            string s = "";
+            switch (selectedTarget)
+            {
+                case TargetOption.All:
+                    s = "all";
+                    break;
+
+                case TargetOption.Self:
+                    s = "yourself";
+                    break;
+
+                case TargetOption.Selected:
+                    s = Positions.Single(p => p.Id == SelectedId.GetValueOrDefault())?.Nickname;
+                    break;
+
+                case TargetOption.SelfAndSelected:
+                    s = $"{Positions.Single(p => p.Id == SelectedId.GetValueOrDefault())?.Nickname} and yourself"; 
+                    break;
+            }
+            return s;
+        }
 
         public static void CycleTarget()
         {
-            var i = Array.IndexOf(_targetOptions, SelectedTarget);
-            if(i == _targetOptions.Count()-1)
-            {
-                i = -1;
-            }
-            var newTarget = _targetOptions[i + 1];
-            SelectedTarget = newTarget;
+            SelectedTarget = NextTarget(SelectedTarget);
         }
 
+
+        private static TargetOption NextTarget(TargetOption option)
+        {
+            var target = option;
+
+            while (true)
+            {
+                var i = Array.IndexOf(_targetOptions, target);
+                if (i == _targetOptions.Count() - 1)
+                {
+                    i = -1;
+                }
+
+                i++;
+
+                target = _targetOptions[i];
+
+                if((target == TargetOption.Selected|| target == TargetOption.SelfAndSelected) && SelectedId.HasValue && SelectedId.Value == State.Id)
+                {
+                    continue;
+                }
+
+                if((SelectedId.HasValue && (target == TargetOption.Selected || target == TargetOption.SelfAndSelected))
+                    || target == TargetOption.All
+                    || target == TargetOption.Self)
+                {
+                    return target;
+                }
+            }
+        }
 
         public static Guid Id
         {

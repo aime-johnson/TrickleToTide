@@ -38,7 +38,7 @@ namespace TrickleToTide.Mobile.ViewModels
 
 
         public ObservableCollection<PositionViewModel> Positions => State.Positions;
-        public string Title => "Trickle to Tide" + (_updates.IsRunning ? $" (Following {State.SelectedTarget})" :"" );
+        public string Title => "Trickle to Tide";
         public bool WaitingForPositions => _updates.IsRunning && !Positions.Any();
         public bool CanStart => !_updates.IsRunning && _updates.IsGpsConnected;
         public bool CanStop => _updates.IsRunning && _updates.IsGpsConnected;
@@ -65,12 +65,20 @@ namespace TrickleToTide.Mobile.ViewModels
                     State.SelectedId = value?.Id;
                     if (State.SelectedId.HasValue)
                     {
-                        State.SelectedTarget = TargetOption.Self;
+                        if(State.SelectedId.Value == State.Id)
+                        {
+                            State.SelectedTarget = TargetOption.Self;
+                        }
+                        else
+                        {
+                            State.SelectedTarget = TargetOption.Selected;
+                        }
                     }
                     else
                     {
                         State.SelectedTarget = TargetOption.All;
                     }
+
                     OnPropertyChanged("IsPositionSelected");
                     OnPropertyChanged("SelectedPositionSummary");
                     OnPropertyChanged("SelectedPositionDetail");

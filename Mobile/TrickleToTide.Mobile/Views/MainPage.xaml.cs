@@ -51,28 +51,27 @@ namespace TrickleToTide.Mobile.Views
         private void CentreAndZoom()
         {
             var source = State.Positions.AsEnumerable();
+            if (State.Category != "Dev")
+            {
+                // Filter out Dev entities unless we're a Dev ourself
+                source = source.Where(x => x.Category != "Dev");
+            }
 
             switch (State.SelectedTarget)
             {
                 case TargetOption.All:
-                    if(State.Category != "Dev")
-                    {
-                        // Filter out Dev entities unless we're a Dev ourself
-                        source = source.Where(x => x.Category != "Dev");
-                    }
                     break;
 
-
                 case TargetOption.Self:
-                    if (State.SelectedId.HasValue)
-                    {
-                        source = source.Where(x => x.Id == State.Id || x.Id == State.SelectedId);
-                    }
-                    else
-                    {
-                        source = source.Where(x => x.Id == State.Id);
+                    source = source.Where(x => x.Id == State.Id);
+                    break;
 
-                    }
+                case TargetOption.SelfAndSelected:
+                    source = source.Where(x => x.Id == State.Id || x.Id == State.SelectedId);
+                    break;
+
+                case TargetOption.Selected:
+                    source = source.Where(x => x.Id == State.SelectedId);
                     break;
             }
 
