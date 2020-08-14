@@ -19,6 +19,7 @@ namespace TrickleToTide.Mobile
             public const string CATEGORY = "Paddle Team";
             public static readonly string[] CATEGORIES = new[] { 
                 CATEGORY,
+                "Walkers",
                 "Support",
                 "Dev"
             };
