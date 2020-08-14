@@ -11,8 +11,8 @@
     <ContentPage.Content>
         <Grid>
             <maps:Map x:Name="map"
-                      HasZoomEnabled="False"
-                      HasScrollEnabled="False"
+                      HasZoomEnabled="{Binding AllowMapPan}"
+                      HasScrollEnabled="{Binding AllowMapPan}"
                       ItemsSource="{Binding Positions}"
                       MapClicked="MapClicked">
                 <maps:Map.ItemTemplate>

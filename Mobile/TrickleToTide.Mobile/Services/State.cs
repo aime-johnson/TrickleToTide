@@ -22,7 +22,8 @@ namespace TrickleToTide.Mobile.Services
         Self,
         Selected,
         SelfAndSelected,
-        All
+        All,
+        None
     }
 
     public static class State
@@ -36,6 +37,7 @@ namespace TrickleToTide.Mobile.Services
             TargetOption.Selected,
             TargetOption.SelfAndSelected,
             TargetOption.Self,
+            TargetOption.None
         };
 
         public static ObservableCollection<PositionViewModel> Positions { get; } = new ObservableCollection<PositionViewModel>();
@@ -234,6 +236,10 @@ namespace TrickleToTide.Mobile.Services
                 case TargetOption.SelfAndSelected:
                     s = $"{Positions.Single(p => p.Id == SelectedId.GetValueOrDefault())?.Nickname} and yourself"; 
                     break;
+
+                case TargetOption.None:
+                    s = "nothing. Pan & Zoom!";
+                    break;
             }
             return s;
         }
@@ -260,17 +266,13 @@ namespace TrickleToTide.Mobile.Services
 
                 target = _targetOptions[i];
 
-                if((target == TargetOption.Selected|| target == TargetOption.SelfAndSelected) && SelectedId.HasValue && SelectedId.Value == State.Id)
+                // target includes the selected pin, but we don't have a selected pin. Skip.
+                if((target == TargetOption.Selected || target == TargetOption.SelfAndSelected) && !SelectedId.HasValue)
                 {
                     continue;
                 }
 
-                if((SelectedId.HasValue && (target == TargetOption.Selected || target == TargetOption.SelfAndSelected))
-                    || target == TargetOption.All
-                    || target == TargetOption.Self)
-                {
-                    return target;
-                }
+                return target;
             }
         }
 

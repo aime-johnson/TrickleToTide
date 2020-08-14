@@ -76,7 +76,11 @@ namespace TrickleToTide.Mobile.ViewModels
                     }
                     else
                     {
-                        State.SelectedTarget = TargetOption.All;
+                        // Flip back to following all, unless we were currently in pan/zoom mode
+                        if(State.SelectedTarget != TargetOption.None)
+                        {
+                            State.SelectedTarget = TargetOption.All;
+                        }
                     }
 
                     OnPropertyChanged("IsPositionSelected");
@@ -151,6 +155,8 @@ namespace TrickleToTide.Mobile.ViewModels
 
         private void RefreshUI()
         {
+            AllowMapPan = State.SelectedTarget == TargetOption.None;
+
             OnPropertyChanged("CanStart");
             OnPropertyChanged("CanStop");
             OnPropertyChanged("Title");
@@ -160,6 +166,14 @@ namespace TrickleToTide.Mobile.ViewModels
             StartCommand.ChangeCanExecute();
             StopCommand.ChangeCanExecute();
             SetTargetCommand.ChangeCanExecute();
+        }
+
+
+        private bool _allowMapPan;
+        public bool AllowMapPan
+        {
+            get { return _allowMapPan; }
+            set { SetProperty(ref _allowMapPan, value); }
         }
     }
 
