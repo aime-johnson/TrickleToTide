@@ -76,9 +76,9 @@ namespace TrickleToTide.Mobile.Services
 
                     var json = await rs.Content.ReadAsStringAsync();
                     var source = JsonConvert.DeserializeObject<PositionUpdate[]>(json);
-
+                    
                     // Update our internal positions list
-                    foreach (var pos in source)
+                    foreach (var pos in source.Where(x => x.Category != "Dev"))
                     {
                         var p = Positions.SingleOrDefault(x => x.Id == pos.Id);
                         if (p == null)
@@ -268,6 +268,12 @@ namespace TrickleToTide.Mobile.Services
 
                 // target includes the selected pin, but we don't have a selected pin. Skip.
                 if((target == TargetOption.Selected || target == TargetOption.SelfAndSelected) && !SelectedId.HasValue)
+                {
+                    continue;
+                }
+
+                // Skip if your a dev & target is self + selected
+                if(target == TargetOption.SelfAndSelected && State.Category == "Dev")
                 {
                     continue;
                 }

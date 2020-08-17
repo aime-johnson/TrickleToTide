@@ -11,10 +11,10 @@ namespace TrickleToTide.Mobile
     {
         public override void ConfigureServices(IServiceCollection services)
         {
-            services.UseGeofencing<GeofenceDelegate>();
+            //services.UseGeofencing<GeofenceDelegate>();
             services.UseGps<GpsDelegate>();
-            services.UseMotionActivity();
-            services.UseNotifications<NotifictionDelegate>(true);
+            //services.UseMotionActivity();
+            //services.UseNotifications<NotifictionDelegate>(true);
         }
     }
 }

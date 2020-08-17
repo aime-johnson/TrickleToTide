@@ -69,7 +69,7 @@ namespace TrickleToTide.Mobile.Droid.Services
                 var access = await _gpsManager.RequestAccessAndStart(new GpsRequest()
                 {
                     Interval = TimeSpan.FromSeconds(10),
-                    Priority = GpsPriority.Highest,
+                    Priority = GpsPriority.Normal,
                     UseBackground = true
                 });
 

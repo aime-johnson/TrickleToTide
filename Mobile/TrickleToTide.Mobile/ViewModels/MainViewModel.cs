@@ -125,11 +125,8 @@ namespace TrickleToTide.Mobile.ViewModels
                 if(SelectedPosition != null)
                 {
                     detail.AppendLine($"<div>Distance from <strong>{SelectedPosition.Nickname}</strong> to:</div>");
-                    var source = Positions.Where(p => p.Id != SelectedPosition.Id);
-                    if(State.Category != "Dev")
-                    {
-                        source = source.Where(p => p.Category != "Dev");
-                    }
+                    var source = Positions.Where(p => p.Id != SelectedPosition.Id && p.Category != "Dev");
+
                     foreach (var pos in source)
                     {
                         var x = SelectedPosition.CalculateDistanceTo(

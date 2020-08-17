@@ -55,11 +55,7 @@ namespace TrickleToTide.Mobile.Views
             if(State.SelectedTarget != TargetOption.None)
             {
                 var source = State.Positions.AsEnumerable();
-                if (State.Category != "Dev")
-                {
-                    // Filter out Dev entities unless we're a Dev ourself
-                    source = source.Where(x => x.Category != "Dev");
-                }
+
 
                 switch (State.SelectedTarget)
                 {
@@ -82,7 +78,7 @@ namespace TrickleToTide.Mobile.Views
                 // Default to the route if we have nothing better
                 if (!source.Any())
                 {
-                    Log.Event("Displaying route");
+                    Log.Event("No Source positions: Displaying route");
 
                     source = _route.Geopath.Select(x => new PositionViewModel() {
                         Position = x

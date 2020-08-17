@@ -61,6 +61,39 @@ namespace TrickleToTide.Api
         }
 
 
+        [FunctionName("history")]
+        public async Task<IActionResult> History(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
+            ILogger log)
+        {
+            var id = req.Query["id"];
+            if (string.IsNullOrEmpty(id))
+            {
+                return new NotFoundResult();
+            }
+
+
+            var query = _context.History
+                .Where(h => h.PositionId == Guid.Parse(id))
+                .OrderByDescending(h => h.Timestamp)
+                .Select(h => new Common.PositionHistory() {
+                    Timestamp = h.Timestamp,
+                    Latitude = h.Latitude,
+                    Longitude = h.Longitude,
+                    Altitude = h.Altitude
+                });
+
+
+            var from = req.Query["fromUtc"];
+            if (!string.IsNullOrEmpty(from))
+            {
+                query = query.Where(h => h.Timestamp > DateTime.Parse(from));
+            }
+
+            var x = await query.ToArrayAsync();
+
+            return new OkObjectResult(x);
+        }
 
 
         private async Task UpdatePositionAsync(PositionUpdate source)
@@ -86,7 +119,7 @@ namespace TrickleToTide.Api
             position.Accuracy = 0;
             position.Speed = 0;
 
-            position.History.Add(new PositionHistory()
+            position.History.Add(new DAL.PositionHistory()
             {
                 Altitude = position.Altitude,
                 Timestamp = position.Timestamp,
@@ -104,17 +137,22 @@ namespace TrickleToTide.Api
 
         private async Task<PositionUpdate[]> GetLatestPositionsAsync()
         {
-            var positions = await _context.Positions.OrderByDescending(p => p.Timestamp).ToArrayAsync();
-            return positions.Select(p => new PositionUpdate()
-            {
-                Id = p.Id,
-                Timestamp = p.Timestamp,
-                Altitude = p.Altitude,
-                Latitude = p.Latitude,
-                Longitude = p.Longitude,
-                Category = p.Category,
-                Nickname = p.Nickname
-            }).ToArray();
+            var positions = await _context.Positions
+                .Where(p => p.Category != "Dev")
+                .OrderByDescending(p => p.Timestamp)
+                .Select(p => new PositionUpdate()
+                {
+                    Id = p.Id,
+                    Timestamp = p.Timestamp,
+                    Altitude = p.Altitude,
+                    Latitude = p.Latitude,
+                    Longitude = p.Longitude,
+                    Category = p.Category,
+                    Nickname = p.Nickname
+                })
+                .ToArrayAsync();
+
+            return positions;
         }
     }
 }

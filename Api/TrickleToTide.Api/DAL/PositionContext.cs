@@ -14,6 +14,7 @@ namespace TrickleToTide.Api.DAL
         }
 
         public DbSet<Position> Positions { get; set; }
+        public DbSet<PositionHistory> History { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
