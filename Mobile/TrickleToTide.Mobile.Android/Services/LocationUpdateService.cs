@@ -40,7 +40,7 @@ namespace TrickleToTide.Mobile.Droid.Services
                 {
                     try
                     {
-                        var positions = await State.UpdatePositionAsync(new PositionUpdate()
+                        var positions = await State.SetPositionAsync(new PositionUpdate()
                         {
                             Id = State.Id,
                             Category = State.Category,

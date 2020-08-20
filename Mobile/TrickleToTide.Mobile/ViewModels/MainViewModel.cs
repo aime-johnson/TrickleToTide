@@ -35,8 +35,6 @@ namespace TrickleToTide.Mobile.ViewModels
             // Force a re-build
             State.Positions.Clear();
             State.ResetThrottle();
-
-            //Task.Run(() => State.RefreshPositions());
         }
 
 

@@ -76,29 +76,29 @@ namespace TrickleToTide.Mobile.Services
         }
 
 
-        public static async void RefreshPositions()
+        public static Task RefreshPositions()
         {
-            try
-            {
-                Log.Event("Loading latest positions");
+            return Task.Run(async () => {
+                try
+                {
+                    var rs = await _client.GetAsync(_platform.ApiEndpoint + "/api/latest");
 
-                var rs = await _client.GetAsync(_platform.ApiEndpoint + "/api/latest");
+                    rs.EnsureSuccessStatusCode();
 
-                rs.EnsureSuccessStatusCode();
+                    var json = await rs.Content.ReadAsStringAsync();
+                    var source = JsonConvert.DeserializeObject<PositionUpdate[]>(json);
 
-                var json = await rs.Content.ReadAsStringAsync();
-                var source = JsonConvert.DeserializeObject<PositionUpdate[]>(json);
-
-                Process(source);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex);
-            }
+                    Process(source);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex);
+                }
+            });
         }
 
 
-        public async static Task<PositionUpdate[]> UpdatePositionAsync(PositionUpdate position)
+        public async static Task<PositionUpdate[]> SetPositionAsync(PositionUpdate position)
         {
             // Throttle updates
             if (LastUpdate.AddSeconds(_throttleSeconds) < DateTime.Now)
@@ -293,41 +293,43 @@ namespace TrickleToTide.Mobile.Services
 
         private static void Process(PositionUpdate[] source)
         {
-            // Update our internal positions list
-            foreach (var pos in source.Where(x => x.Category != "Dev"))
-            {
-                var p = Positions.SingleOrDefault(x => x.Id == pos.Id);
-                if (p == null)
+            MainThread.BeginInvokeOnMainThread(() => {
+                // Update our internal positions list
+                foreach (var pos in source.Where(x => x.Category != "Dev"))
                 {
-                    p = new PositionViewModel()
+                    var p = Positions.SingleOrDefault(x => x.Id == pos.Id);
+                    if (p == null)
                     {
-                        Id = pos.Id,
-                        Category = pos.Category,
-                        Nickname = pos.Nickname ?? "Anon",
-                        Timestamp = pos.Timestamp,
-                        Position = new Xamarin.Forms.Maps.Position(pos.Latitude, pos.Longitude)
-                    };
+                        p = new PositionViewModel()
+                        {
+                            Id = pos.Id,
+                            Category = pos.Category,
+                            Nickname = pos.Nickname ?? "Anon",
+                            Timestamp = pos.Timestamp,
+                            Position = new Xamarin.Forms.Maps.Position(pos.Latitude, pos.Longitude)
+                        };
 
-                    Positions.Add(p);
+                        Positions.Add(p);
+                    }
+
+                    p.Timestamp = pos.Timestamp;
+                    p.Category = pos.Category;
+                    p.Nickname = pos.Nickname ?? "Anon";
+                    p.Position = new Xamarin.Forms.Maps.Position(pos.Latitude, pos.Longitude);
                 }
 
-                p.Timestamp = pos.Timestamp;
-                p.Category = pos.Category;
-                p.Nickname = pos.Nickname ?? "Anon";
-                p.Position = new Xamarin.Forms.Maps.Position(pos.Latitude, pos.Longitude);
-            }
-
-            // Remove any that no longer appear in the feed
-            foreach (var pos in Positions.ToArray())
-            {
-                var existing = source.SingleOrDefault(x => x.Id == pos.Id);
-                if (existing == null)
+                // Remove any that no longer appear in the feed
+                foreach (var pos in Positions.ToArray())
                 {
-                    Positions.Remove(pos);
+                    var existing = source.SingleOrDefault(x => x.Id == pos.Id);
+                    if (existing == null)
+                    {
+                        Positions.Remove(pos);
+                    }
                 }
-            }
 
-            MessagingCenter.Send<PositionUpdate[]>(source, Constants.Message.POSITIONS_UPDATED);
+                MessagingCenter.Send<PositionUpdate[]>(source, Constants.Message.POSITIONS_UPDATED);
+            });
         }
     }
 }
