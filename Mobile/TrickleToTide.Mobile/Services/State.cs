@@ -113,7 +113,7 @@ namespace TrickleToTide.Mobile.Services
 
                 rs.EnsureSuccessStatusCode();
                 LastUpdate = DateTime.Now;
-                LastKnownPosition = new Position(position.Longitude, position.Longitude);
+                LastKnownPosition = new Position(position.Latitude, position.Longitude);
 
                 var json = await rs.Content.ReadAsStringAsync();
                 var source = JsonConvert.DeserializeObject<PositionUpdate[]>(json);
