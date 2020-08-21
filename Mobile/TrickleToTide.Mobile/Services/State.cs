@@ -31,7 +31,6 @@ namespace TrickleToTide.Mobile.Services
         private static Guid _id;
         private static readonly HttpClient _client;
         private static readonly IPlatform _platform;
-        private static readonly int _throttleSeconds = 60;
         private static readonly TargetOption[] _targetOptions = new[] { 
             TargetOption.All,
             TargetOption.Selected,
@@ -87,6 +86,8 @@ namespace TrickleToTide.Mobile.Services
 
                     var json = await rs.Content.ReadAsStringAsync();
                     var source = JsonConvert.DeserializeObject<PositionUpdate[]>(json);
+                    
+                    Log.Event("Refreshed positions");
 
                     Process(source);
                 }
@@ -100,43 +101,35 @@ namespace TrickleToTide.Mobile.Services
 
         public async static Task<PositionUpdate[]> SetPositionAsync(PositionUpdate position)
         {
-            // Throttle updates
-            if (LastUpdate.AddSeconds(_throttleSeconds) < DateTime.Now)
+            Log.Event($"SetPosition ({position.Latitude:0.000}, {position.Longitude:0.000})");
+            try
             {
-                Log.Event($"Update ({position.Latitude:0.000}, {position.Longitude:0.000})");
-                try
-                {
-                    var rs = await _client.PostAsync(
-                        _platform.ApiEndpoint + "/api/update",
-                        new StringContent(
-                            JsonConvert.SerializeObject(position),
-                            Encoding.UTF8,
-                            "application/json"));
+                var rs = await _client.PostAsync(
+                    _platform.ApiEndpoint + "/api/update",
+                    new StringContent(
+                        JsonConvert.SerializeObject(position),
+                        Encoding.UTF8,
+                        "application/json"));
 
-                    rs.EnsureSuccessStatusCode();
-                    LastUpdate = DateTime.Now;
+                rs.EnsureSuccessStatusCode();
+                LastUpdate = DateTime.Now;
+                LastKnownPosition = new Position(position.Longitude, position.Longitude);
 
-                    var json = await rs.Content.ReadAsStringAsync();
-                    var source = JsonConvert.DeserializeObject<PositionUpdate[]>(json);
+                var json = await rs.Content.ReadAsStringAsync();
+                var source = JsonConvert.DeserializeObject<PositionUpdate[]>(json);
 
-                    Process(source);
+                Process(source);
 
-                    return source;
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex);
-                }
+                return source;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
             }
 
             return null;
         }
 
-
-        public static void ResetThrottle()
-        {
-            LastUpdate = DateTime.MinValue;
-        }
 
         public static Position LastKnownPosition
         {
@@ -146,7 +139,7 @@ namespace TrickleToTide.Mobile.Services
                 var lon = Preferences.Get(Constants.Preferences.LAST_LONGITUDE, 0.0);
                 return lat == 0.0 && lon == 0.0 ? new Position(Constants.Default.ROUTE_CENTREPOINT.Latitude, Constants.Default.ROUTE_CENTREPOINT.Longitude) : new Position(lat, lon);
             }
-            set
+            private set
             {
                 Preferences.Set(Constants.Preferences.LAST_LATITUDE, value.Latitude);
                 Preferences.Set(Constants.Preferences.LAST_LONGITUDE, value.Longitude);
@@ -219,7 +212,6 @@ namespace TrickleToTide.Mobile.Services
                     
                     _platform.Toast("Following " + Humanize(SelectedTarget));
                     Log.Event("Following " + SelectedTarget.ToString());
-                    State.ResetThrottle();
                 }
             }
         }
