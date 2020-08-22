@@ -1,25 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
 using Android.Support.V4.App;
-using Android.Views;
-using Android.Widget;
 using Shiny;
 using Shiny.Locations;
-using TrickleToTide.Common;
-using TrickleToTide.Mobile.Delegates;
 using TrickleToTide.Mobile.Droid.Services;
 using TrickleToTide.Mobile.Interfaces;
 using TrickleToTide.Mobile.Services;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(LocationUpdateService))]
@@ -33,32 +22,6 @@ namespace TrickleToTide.Mobile.Droid.Services
         public LocationUpdateService()
         {
             _gpsManager = ShinyHost.Resolve<IGpsManager>();
-
-            MessagingCenter.Subscribe<GpsDelegate, IGpsReading>(this, Constants.Message.LOCATION_UPDATED, async (sender, reading) =>
-            {
-                if (IsRunning)
-                {
-                    try
-                    {
-                        var positions = await State.UpdatePositionAsync(new PositionUpdate()
-                        {
-                            Id = State.Id,
-                            Category = State.Category,
-                            Nickname = State.Nickname,
-                            Latitude = reading.Position.Latitude,
-                            Longitude = reading.Position.Longitude,
-                            Altitude = reading.Altitude,
-                            Timestamp = reading.Timestamp
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Event(ex.Message);
-                    }
-                }
-
-                State.LastKnownPosition = reading.Position;
-            });
         }
 
 
@@ -68,7 +31,7 @@ namespace TrickleToTide.Mobile.Droid.Services
             {
                 var access = await _gpsManager.RequestAccessAndStart(new GpsRequest()
                 {
-                    Interval = TimeSpan.FromSeconds(10),
+                    Interval = TimeSpan.FromSeconds(60),
                     Priority = GpsPriority.Normal,
                     UseBackground = true
                 });
@@ -81,7 +44,6 @@ namespace TrickleToTide.Mobile.Droid.Services
                 {
                     _gpsAvailable = true;
                     Log.Event($"GPS Connected");
-                    State.ResetThrottle();
                     MessagingCenter.Send<IGpsManager>(_gpsManager, Constants.Message.GPS_STATE_CHANGED);
                 }
             }
@@ -103,10 +65,10 @@ namespace TrickleToTide.Mobile.Droid.Services
         public void Start()
         {
             Android.App.Application.Context.StartForegroundService<KeepAliveService>();
-            State.ResetThrottle();
             IsRunning = true;
             MessagingCenter.Send<ILocationUpdates>(this, Constants.Message.TRACKING_STATE_CHANGED);
             Log.Event("Start Tracking");
+            State.RefreshPositions();
         }
 
 
@@ -136,6 +98,9 @@ namespace TrickleToTide.Mobile.Droid.Services
 
         public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
         {
+            var v = global::Android.OS.Build.VERSION.SdkInt;
+            Log.Event($"[{this.GetType().Name}] OnStartCommand (DROID VERSION {v})");
+
             StartForeground(ServiceRunningNotifID, CreateNotification());
 
             //_ = DoLongRunningOperationThings();
@@ -143,6 +108,24 @@ namespace TrickleToTide.Mobile.Droid.Services
             return StartCommandResult.Sticky;
         }
 
+
+        public override void OnDestroy()
+        {
+            Log.Event($"[{this.GetType().Name}] OnDestroy");
+            base.OnDestroy();
+        }
+
+        public override void OnLowMemory()
+        {
+            Log.Event($"[{this.GetType().Name}] OnLowMemory");
+            base.OnLowMemory();
+        }
+
+        public override void OnTrimMemory([GeneratedEnum] TrimMemory level)
+        {
+            Log.Event($"[{this.GetType().Name}] OnTrimMemory");
+            base.OnTrimMemory(level);
+        }
 
         private Notification CreateNotification()
         {
@@ -167,10 +150,7 @@ namespace TrickleToTide.Mobile.Droid.Services
             {
                 NotificationChannel notificationChannel = new NotificationChannel(foregroundChannelId, "Title", NotificationImportance.None);
                 notificationChannel.Importance = NotificationImportance.None;
-                //notificationChannel.EnableLights(true);
-                //notificationChannel.EnableVibration(true);
                 notificationChannel.SetShowBadge(true);
-                notificationChannel.SetVibrationPattern(new long[] { 100, 100 });
 
                 var notifManager = context.GetSystemService(Context.NotificationService) as NotificationManager;
                 if (notifManager != null)

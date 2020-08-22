@@ -10,7 +10,7 @@
              Title="{Binding Title}">
     <ContentPage.Content>
         <Grid>
-            <maps:Map x:Name="map"
+            <ui:CustomMap x:Name="map"
                       HasZoomEnabled="{Binding AllowMapPan}"
                       HasScrollEnabled="{Binding AllowMapPan}"
                       ItemsSource="{Binding Positions}"
@@ -24,8 +24,8 @@
                             MarkerClicked="MarkerClicked"/>
                     </DataTemplate>
                 </maps:Map.ItemTemplate>
-            </maps:Map>
-
+            </ui:CustomMap>
+            
             <Grid VerticalOptions="End" Margin="20">
                 <StackLayout Orientation="Vertical">
                     <StackLayout Orientation="Horizontal" VerticalOptions="End" HorizontalOptions="FillAndExpand">
@@ -50,8 +50,6 @@
                         </Expander>
                     </Frame>
                 </StackLayout>
-
-
             </Grid>
         </Grid>
     </ContentPage.Content>

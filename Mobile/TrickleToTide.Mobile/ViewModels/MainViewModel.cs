@@ -3,6 +3,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using TrickleToTide.Common;
 using TrickleToTide.Mobile.Interfaces;
 using TrickleToTide.Mobile.Services;
@@ -33,7 +34,6 @@ namespace TrickleToTide.Mobile.ViewModels
 
             // Force a re-build
             State.Positions.Clear();
-            State.ResetThrottle();
         }
 
 

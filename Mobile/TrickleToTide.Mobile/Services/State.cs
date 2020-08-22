@@ -31,7 +31,6 @@ namespace TrickleToTide.Mobile.Services
         private static Guid _id;
         private static readonly HttpClient _client;
         private static readonly IPlatform _platform;
-        private static readonly int _throttleSeconds = 60;
         private static readonly TargetOption[] _targetOptions = new[] { 
             TargetOption.All,
             TargetOption.Selected,
@@ -55,80 +54,82 @@ namespace TrickleToTide.Mobile.Services
             SelectedTarget = TargetOption.All;
         }
 
-
-        public async static Task<PositionUpdate[]> UpdatePositionAsync(PositionUpdate position)
+        public static Guid Id
         {
-            // Throttle updates
-            if (LastUpdate.AddSeconds(_throttleSeconds) < DateTime.Now)
+            get
             {
-                Log.Event($"Update ({position.Latitude:0.000}, {position.Longitude:0.000})");
+                if (_id == default(Guid))
+                {
+                    if (!Preferences.ContainsKey(Constants.Preferences.ID))
+                    {
+                        _id = Guid.NewGuid();
+                        Preferences.Set(Constants.Preferences.ID, _id.ToString());
+                    }
+                    else
+                    {
+                        _id = Guid.Parse(Preferences.Get(Constants.Preferences.ID, Guid.Empty.ToString()));
+                    }
+                }
+                return _id;
+            }
+        }
+
+
+        public static Task RefreshPositions()
+        {
+            return Task.Run(async () => {
                 try
                 {
-                    var rs = await _client.PostAsync(
-                        _platform.ApiEndpoint + "/api/update",
-                        new StringContent(
-                            JsonConvert.SerializeObject(position),
-                            Encoding.UTF8,
-                            "application/json"));
+                    var rs = await _client.GetAsync(_platform.ApiEndpoint + "/api/latest");
 
                     rs.EnsureSuccessStatusCode();
-                    LastUpdate = DateTime.Now;
 
                     var json = await rs.Content.ReadAsStringAsync();
                     var source = JsonConvert.DeserializeObject<PositionUpdate[]>(json);
                     
-                    // Update our internal positions list
-                    foreach (var pos in source.Where(x => x.Category != "Dev"))
-                    {
-                        var p = Positions.SingleOrDefault(x => x.Id == pos.Id);
-                        if (p == null)
-                        {
-                            p = new PositionViewModel()
-                            {
-                                Id = pos.Id,
-                                Category = pos.Category,
-                                Nickname = pos.Nickname ?? "Anon",
-                                Timestamp = pos.Timestamp,
-                                Position = new Xamarin.Forms.Maps.Position(pos.Latitude, pos.Longitude)
-                            };
+                    Log.Event("Refreshed positions");
 
-                            Positions.Add(p);
-                        }
-
-                        p.Timestamp = pos.Timestamp;
-                        p.Category = pos.Category;
-                        p.Nickname = pos.Nickname ?? "Anon";
-                        p.Position = new Xamarin.Forms.Maps.Position(pos.Latitude, pos.Longitude);
-                    }
-
-                    // Remove any that no longer appear in the feed
-                    foreach (var pos in Positions.ToArray())
-                    {
-                        var existing = source.SingleOrDefault(x => x.Id == pos.Id);
-                        if (existing == null)
-                        {
-                            Positions.Remove(pos);
-                        }
-                    }
-
-                    MessagingCenter.Send<PositionUpdate[]>(source, Constants.Message.POSITIONS_UPDATED);
-
-                    return source;
+                    Process(source);
                 }
                 catch (Exception ex)
                 {
                     Log.Error(ex);
                 }
+            });
+        }
+
+
+        public async static Task<PositionUpdate[]> SetPositionAsync(PositionUpdate position)
+        {
+            Log.Event($"SetPosition ({position.Latitude:0.000}, {position.Longitude:0.000})");
+            try
+            {
+                var rs = await _client.PostAsync(
+                    _platform.ApiEndpoint + "/api/update",
+                    new StringContent(
+                        JsonConvert.SerializeObject(position),
+                        Encoding.UTF8,
+                        "application/json"));
+
+                rs.EnsureSuccessStatusCode();
+                LastUpdate = DateTime.Now;
+                LastKnownPosition = new Position(position.Latitude, position.Longitude);
+
+                var json = await rs.Content.ReadAsStringAsync();
+                var source = JsonConvert.DeserializeObject<PositionUpdate[]>(json);
+
+                Process(source);
+
+                return source;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
             }
 
             return null;
         }
 
-
-        public static void ResetThrottle()
-        {
-            LastUpdate = DateTime.MinValue;
-        }
 
         public static Position LastKnownPosition
         {
@@ -136,9 +137,9 @@ namespace TrickleToTide.Mobile.Services
             {
                 var lat = Preferences.Get(Constants.Preferences.LAST_LATITUDE, 0.0);
                 var lon = Preferences.Get(Constants.Preferences.LAST_LONGITUDE, 0.0);
-                return lat == 0.0 && lon == 0.0 ? new Position(Constants.Default.LATITUDE, Constants.Default.LONGITUDE) : new Position(lat, lon);
+                return lat == 0.0 && lon == 0.0 ? new Position(Constants.Default.ROUTE_CENTREPOINT.Latitude, Constants.Default.ROUTE_CENTREPOINT.Longitude) : new Position(lat, lon);
             }
-            set
+            private set
             {
                 Preferences.Set(Constants.Preferences.LAST_LATITUDE, value.Latitude);
                 Preferences.Set(Constants.Preferences.LAST_LONGITUDE, value.Longitude);
@@ -211,7 +212,6 @@ namespace TrickleToTide.Mobile.Services
                     
                     _platform.Toast("Following " + Humanize(SelectedTarget));
                     Log.Event("Following " + SelectedTarget.ToString());
-                    State.ResetThrottle();
                 }
             }
         }
@@ -282,24 +282,46 @@ namespace TrickleToTide.Mobile.Services
             }
         }
 
-        public static Guid Id
+
+        private static void Process(PositionUpdate[] source)
         {
-            get
-            {
-                if (_id == default(Guid))
+            MainThread.BeginInvokeOnMainThread(() => {
+                // Update our internal positions list
+                foreach (var pos in source.Where(x => x.Category != "Dev"))
                 {
-                    if (!Preferences.ContainsKey(Constants.Preferences.ID))
+                    var p = Positions.SingleOrDefault(x => x.Id == pos.Id);
+                    if (p == null)
                     {
-                        _id = Guid.NewGuid();
-                        Preferences.Set(Constants.Preferences.ID, _id.ToString());
+                        p = new PositionViewModel()
+                        {
+                            Id = pos.Id,
+                            Category = pos.Category,
+                            Nickname = pos.Nickname ?? "Anon",
+                            Timestamp = pos.Timestamp,
+                            Position = new Xamarin.Forms.Maps.Position(pos.Latitude, pos.Longitude)
+                        };
+
+                        Positions.Add(p);
                     }
-                    else
+
+                    p.Timestamp = pos.Timestamp;
+                    p.Category = pos.Category;
+                    p.Nickname = pos.Nickname ?? "Anon";
+                    p.Position = new Xamarin.Forms.Maps.Position(pos.Latitude, pos.Longitude);
+                }
+
+                // Remove any that no longer appear in the feed
+                foreach (var pos in Positions.ToArray())
+                {
+                    var existing = source.SingleOrDefault(x => x.Id == pos.Id);
+                    if (existing == null)
                     {
-                        _id = Guid.Parse(Preferences.Get(Constants.Preferences.ID, Guid.Empty.ToString()));
+                        Positions.Remove(pos);
                     }
                 }
-                return _id;
-            }
+
+                MessagingCenter.Send<PositionUpdate[]>(source, Constants.Message.POSITIONS_UPDATED);
+            });
         }
     }
 }
