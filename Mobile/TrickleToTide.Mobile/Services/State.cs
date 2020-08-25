@@ -1,12 +1,9 @@
 ﻿using Newtonsoft.Json;
 using Shiny;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using TrickleToTide.Common;
@@ -56,7 +53,7 @@ namespace TrickleToTide.Mobile.Services
         }
 
 
-        public async static Task<PositionUpdate[]> UpdatePositionAsync(PositionUpdate position)
+        public async static Task<PositionUpdate[]> SetPositionAsync(PositionUpdate position)
         {
             // Throttle updates
             if (LastUpdate.AddSeconds(_throttleSeconds) < DateTime.Now)
