@@ -42,7 +42,6 @@ namespace TrickleToTide.Mobile
         {
             Log.Event("Start");            
             _locationUpdates.StartGps();
-            State.RefreshPositions();
         }
 
 
@@ -54,7 +53,7 @@ namespace TrickleToTide.Mobile
         protected override void OnResume()
         {
             Log.Event("Resume");
-            State.RefreshPositions();
+            State.ResetThrottle();
         }
     }
 }

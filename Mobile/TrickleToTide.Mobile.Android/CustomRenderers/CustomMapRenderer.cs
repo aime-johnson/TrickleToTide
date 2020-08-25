@@ -22,6 +22,8 @@ namespace TrickleToTide.Mobile.Droid.CustomRenderers
 {
     public class CustomMapRenderer : MapRenderer, GoogleMap.IInfoWindowAdapter
     {
+        List<CustomPin> customPins;
+
         public CustomMapRenderer(Context context) : base(context)
         {
         }
@@ -36,42 +38,32 @@ namespace TrickleToTide.Mobile.Droid.CustomRenderers
             return null;
         }
 
+        //protected override void OnElementChanged(Xamarin.Forms.Platform.Android.ElementChangedEventArgs<Map> e)
+        //{
+        //    base.OnElementChanged(e);
+
+        //    if (e.OldElement != null)
+        //    {
+        //        NativeMap.InfoWindowClick -= OnInfoWindowClick;
+        //    }
+
+        //    if (e.NewElement != null)
+        //    {
+        //        var formsMap = (CustomMap)e.NewElement;
+        //        customPins = formsMap.CustomPins;
+        //    }
+        //}
+
+        //private void OnInfoWindowClick(object sender, GoogleMap.InfoWindowClickEventArgs e)
+        //{
+        //}
 
         protected override void OnMapReady(GoogleMap map)
         {
             base.OnMapReady(map);
 
+            //NativeMap.InfoWindowClick += OnInfoWindowClick;
             NativeMap.SetInfoWindowAdapter(this);
-        }
-
-
-        protected override MarkerOptions CreateMarker(Pin pin)
-        {
-            var marker = new MarkerOptions();
-            marker.SetPosition(new LatLng(pin.Position.Latitude, pin.Position.Longitude));
-            marker.SetTitle(pin.Label);
-            marker.SetSnippet(pin.Address);
-
-            // We store category in address
-            switch (pin.Address.ToLowerInvariant())
-            {
-                case "paddle team":
-                    marker.SetIcon(BitmapDescriptorFactory.FromResource(Resource.Drawable.pin_paddle_team));
-                    break;
-
-                case "walkers":
-                    marker.SetIcon(BitmapDescriptorFactory.FromResource(Resource.Drawable.pin_walkers));
-                    break;
-
-                case "support":
-                    marker.SetIcon(BitmapDescriptorFactory.FromResource(Resource.Drawable.pin_support));
-                    break;
-
-                default:
-                    marker.SetIcon(BitmapDescriptorFactory.FromResource(Resource.Drawable.pin_default));
-                    break;
-            }
-            return marker;
         }
     }
 }
