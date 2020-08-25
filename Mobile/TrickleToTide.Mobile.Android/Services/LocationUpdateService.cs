@@ -50,6 +50,8 @@ namespace TrickleToTide.Mobile.Droid.Services
                             Altitude = reading.Altitude,
                             Timestamp = reading.Timestamp
                         });
+
+                        Wakeup();
                     }
                     catch (Exception ex)
                     {
@@ -119,6 +121,24 @@ namespace TrickleToTide.Mobile.Droid.Services
         }
 
         public bool IsRunning { get; private set; }
+
+        private static DateTime _lastWakeup = DateTime.MinValue;
+
+        private static void Wakeup()
+        {
+            if (_lastWakeup < DateTime.Now.AddMinutes(-10))
+            {
+                var pm = (PowerManager)Platform.AppContext.GetSystemService(Context.PowerService);
+                bool isScreenOn = pm.IsInteractive; // check if screen is on
+                if (!isScreenOn)
+                {
+                    PowerManager.WakeLock wl = pm.NewWakeLock(WakeLockFlags.ScreenDim | WakeLockFlags.AcquireCausesWakeup, "ttt:notificationLock");
+                    wl.Acquire(3000);
+                }
+                _lastWakeup = DateTime.Now;
+            }
+        }
+
     }
 
 
