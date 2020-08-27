@@ -51,7 +51,7 @@ namespace TrickleToTide.Mobile.Droid.Services
                             Timestamp = reading.Timestamp
                         });
 
-                        Wakeup();
+                        //Wakeup();
                     }
                     catch (Exception ex)
                     {
