@@ -28,3 +28,4 @@ Add a secrets.xml file to Resources\values with a build action of AndroidResourc
 ```
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Deploy API](https://github.com/RandomBlueThing/TrickleToTide/workflows/Deploy%20API/badge.svg)
+
